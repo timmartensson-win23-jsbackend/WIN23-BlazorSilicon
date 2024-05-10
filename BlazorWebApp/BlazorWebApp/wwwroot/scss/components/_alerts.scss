@@ -1,0 +1,27 @@
+.cookie-alert {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-800);
+    padding: 1.5rem;
+
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .success-message {
+        background-color: var(--color-success);
+    }
+
+    .error-message {
+        background-color: var(--color-danger);
+    }
+
+    .tempdata-message {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: var(--color-white);
+    }
+}
