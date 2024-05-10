@@ -1,22 +1,21 @@
 ﻿<header class="header">
     <div class="container">
-        <NavLink id="logo" href="/" alt="logo"><img src="/images/silicon-solid-logo-light-theme.svg" alt="logo"></NavLink>
+        <a id="logo" href="/" alt="logo"><img src="/images/silicon-solid-logo-light-theme.svg" alt="logo"></a>
 
         <div id="menu">
             <nav>
-                <NavLink href="/" class="menu-link">Overview</NavLink>
+                <NavLink href="/#overview" class="menu-link">Overview</NavLink>
 
-                @*                 @if (_signInManager.IsSignedIn(User))
-                {
-                <a class="menu-link" asp-controller="Courses" asp-action="Index">Courses</a>
-                }
-                else
-                {
-                <a class="menu-link" asp-controller="Home" asp-action="Index" asp-fragment="features">Features</a>
-                } *@
-                <NavLink class="menu-link" href="/contact">Contact</NavLink>
-                <NavLink class="menu-link" href="/courses">Courses</NavLink>                @* Ändras sen när inloggning fungerar *@
+                <AuthorizeView>
+                    <Authorized>
+                        <NavLink class="menu-link" href="/courses">Courses</NavLink>
+                    </Authorized>
+                    <NotAuthorized>
+                        <NavLink class="menu-link" href="/#features">Features</NavLink>
+                    </NotAuthorized>
+                </AuthorizeView>
 
+                <NavLink class="menu-link" href="/contact">Contact</NavLink>            
             </nav>
         </div>
 
@@ -30,19 +29,17 @@
         </div> *@
 
         <div class="account-buttons">
-            @*             @if (_signInManager.IsSignedIn(User))
-            {
-            <a class="account-shortcut" asp-controller="Account" asp-action="Details"><img src="/uploads/@user!.ProfileImage" alt="profile image" /></a>
 
-            }
-            else
-            {
-            <a class="btn-gray" asp-controller="Auth" asp-action="SignIn"><i class="fa-regular fa-right-to-bracket"></i><span>Sign In</span></a>
-            <a class="btn-theme" asp-controller="Auth" asp-action="SignUp"><i class="fa-regular fa-user"></i><span>Sign Up</span></a>
-            } *@
+            <AuthorizeView>
+                <Authorized>
+                    <a class="account-shortcut" href="/account"><img src="/images/profile-image.svg" alt="profile image" /></a>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="btn-gray" href="/account/signin"><i class="fa-regular fa-right-to-bracket"></i><span>Sign In</span></a>
+                    <a class="btn-theme" href="/account/signup"><i class="fa-regular fa-user"></i><span>Sign Up</span></a>
+                </NotAuthorized>
+            </AuthorizeView>
 
-            <NavLink class="btn-gray" href="/signin"><i class="fa-regular fa-right-to-bracket"></i><span>Sign In</span></NavLink>
-            <NavLink class="btn-theme" href="/signup"><i class="fa-regular fa-user"></i><span>Sign Up</span></NavLink>
         </div>
 
         <button class="btn-mobilemenu" id="btn-mobilemenu">
@@ -54,8 +51,8 @@
 
     <div id="mobile-menu">
         <nav>
-            <a class="menu-link" asp-controller="Home" asp-action="Index" asp-fragment="overview">Overview</a>
             @*
+            <a class="menu-link" asp-controller="Home" asp-action="Index" asp-fragment="overview">Overview</a>
             @if (_signInManager.IsSignedIn(User))
             {
             <a class="menu-link" asp-controller="Courses" asp-action="Index">Courses</a>
