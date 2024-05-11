@@ -1,0 +1,78 @@
+﻿@using BlazorWebApp.Models.Home
+
+<section id="newsletter" class="newsletter">
+    <div class="container">
+        <div class="top">
+            <h1>Don't Want to Miss Anything</h1>
+            <img src="/images/squigly-line.svg" alt="Squiggly arrow" />
+        </div>
+        <EditForm id="subscribe-form" FormName="subscribe" Model="Model" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+            <div class="checkbox-content">
+                <div class="news-title">
+                    <h5>Sign up for Newsletters</h5>
+                </div>
+                <div class="checkboxes">                  
+                    <div class="box">
+                        <InputCheckbox @bind-Value="Model.DailyNewsLetter" />
+                        <label>Daily NewsLetter</label>
+                    </div>
+                    <div class="box">
+                        <InputCheckbox @bind-Value="Model.AdvertisingUpdates" />
+                        <label>Advertising Updates</label>
+                    </div>
+                    <div class="box">
+                        <InputCheckbox @bind-Value="Model.WeekInReviews" />
+                        <label>Week In Reviews</label>
+                    </div>
+                    <div class="box">
+                        <InputCheckbox @bind-Value="Model.EventUpdates" />
+                        <label>Event Updates</label>
+                    </div>
+                    <div class="box">
+                        <InputCheckbox @bind-Value="Model.StartupsWeekly" />
+                        <label>Startups Weekly</label>
+                    </div>
+                    <div class="box">
+                        <InputCheckbox @bind-Value="Model.Podcasts" />
+                        <label>Podcasts</label>
+                    </div>
+                </div>
+            </div>
+            <div class="subscribe">
+                <InputText id="input-email" input="email" type="email" @bind-Value="Model.Email" placeholder="Your Email" />
+                <button id="submit-button" type="submit" class="btn-theme"><span>* Subscribe</span></button>
+@*                 <span asp-validation-for="@Subscriber.Email"></span>
+ *@            </div>
+        </EditForm>
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <span id="success" class="alert alert-dark">@StatusMessage</span>
+        }
+        else
+        {
+            <span> * Yes, I agree to the terms and privace policy.</span>
+        }
+
+    </div>
+</section>
+
+@code {
+
+    [SupplyParameterFromQuery]
+    public string StatusMessage { get; set; } = "";
+
+    [SupplyParameterFromForm]
+    public SubscribeModel Model { get; set; } = new SubscribeModel();
+
+   
+
+    
+
+    private async Task OnValidSubmit()
+    {
+
+        StatusMessage = "Thank you for subscribeing!";
+    }
+
+
+}
