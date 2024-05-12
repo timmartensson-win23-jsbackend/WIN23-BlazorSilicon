@@ -1,4 +1,4 @@
-﻿@using BlazorWebApp.Models.Home
+﻿@rendermode InteractiveServer
 
 <section id="newsletter" class="newsletter">
     <div class="container">
@@ -7,6 +7,7 @@
             <img src="/images/squigly-line.svg" alt="Squiggly arrow" />
         </div>
         <EditForm id="subscribe-form" FormName="subscribe" Model="Model" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+            <DataAnnotationsValidator/>
             <div class="checkbox-content">
                 <div class="news-title">
                     <h5>Sign up for Newsletters</h5>
@@ -41,8 +42,8 @@
             <div class="subscribe">
                 <InputText id="input-email" input="email" type="email" @bind-Value="Model.Email" placeholder="Your Email" />
                 <button id="submit-button" type="submit" class="btn-theme"><span>* Subscribe</span></button>
-@*                 <span asp-validation-for="@Subscriber.Email"></span>
- *@            </div>
+                <ValidationMessage For="@(() => Model.Email)"/>
+            </div>
         </EditForm>
         @if (!string.IsNullOrEmpty(StatusMessage))
         {
@@ -64,14 +65,28 @@
     [SupplyParameterFromForm]
     public SubscribeModel Model { get; set; } = new SubscribeModel();
 
-   
 
-    
+
+
 
     private async Task OnValidSubmit()
     {
+        try
+        {
+            var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/Subscribe?code=wGaBQjD3VYfaK-AwJLKMG-CFdYJ-5Jbw5OQZs9xEHiiTAzFuV01ovg==", Model);
+            if (result.IsSuccessStatusCode)
+            {
+                StatusMessage = "Thank you for subscribeing!";
+            }
 
-        StatusMessage = "Thank you for subscribeing!";
+        }
+        catch 
+        {
+           
+            StatusMessage = "Something went wrong";
+        }
+        Model = new SubscribeModel();
+
     }
 
 
