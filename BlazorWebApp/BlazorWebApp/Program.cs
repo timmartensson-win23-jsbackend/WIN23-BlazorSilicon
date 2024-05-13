@@ -14,6 +14,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 
+
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<ServiceBusManager>();
 builder.Services.AddCascadingAuthenticationState();
