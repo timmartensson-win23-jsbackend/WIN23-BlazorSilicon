@@ -1,4 +1,6 @@
 ﻿@page "/Account/signup"
+@rendermode InteractiveServer
+
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
@@ -19,7 +21,7 @@
 
 <section id="signup">
     <div class="container">
-        <EditForm Model="SignUpForm" FormName="signupform" OnValidSubmit="HandleSubmit">
+        <EditForm Model="SignUpForm" FormName="signupform" OnValidSubmit="HandleSubmit" asp-route-returnUrl="@ReturnUrl" novalidate>
             <DataAnnotationsValidator />
 
             <div>
@@ -115,7 +117,7 @@
             return;
         }
 
-        await Http.PostAsJsonAsync("api/account/signup", SignUpForm);
+        await ServiceBusManager.SendMessageAsync(SignUpForm.Email);
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
             RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = SignUpForm.Email, ["returnUrl"] = ReturnUrl });
