@@ -1,4 +1,12 @@
-﻿<h3>ProfileInfo</h3>
+﻿@using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
+
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+
+<h3>ProfileInfo</h3>
 
 @code {
 

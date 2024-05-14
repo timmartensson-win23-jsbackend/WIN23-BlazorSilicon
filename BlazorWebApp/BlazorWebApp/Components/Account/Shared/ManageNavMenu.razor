@@ -13,7 +13,7 @@
     <NavLink class="btn-account-nav" href="Account/Manage/ChangePassword"><i class="fa-regular fa-lock"></i> Security</NavLink>
     <NavLink class="btn-account-nav" href="Account/Manage/Notifications"><i class="fa-regular fa-bell"></i> Notifications</NavLink>
     <NavLink class="btn-account-nav" href="Account/Manage/SavedCourses"><i class="fa-regular fa-bookmark"></i> Saved Courses</NavLink>
-    <button class="btn btn-account-nav" @onclick="SignOut" Match="NavLinkMatch.All"><i class="fa-regular fa-arrow-left-from-bracket"></i> Sign out</button>
+    <NavLink class="btn-account-nav" href="Account/Manage/SignOut"><i class="fa-regular fa-arrow-left-from-bracket"></i> Sign out</NavLink>
 </nav>
 
 @code {
@@ -29,18 +29,5 @@
         hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
     }
 
-    private async Task SignOut()
-    {
-        try
-        {
-            await SignInManager.SignOutAsync();
-            NavigationManager.NavigateTo("/");
-            // If the method completes without throwing an exception, the user was signed out successfully
-        }
-        catch (Exception ex)
-        {
-            // If an exception is thrown, there was an issue during the sign-out process
-            Console.WriteLine(ex.Message);
-        }
-    }
+
 }
