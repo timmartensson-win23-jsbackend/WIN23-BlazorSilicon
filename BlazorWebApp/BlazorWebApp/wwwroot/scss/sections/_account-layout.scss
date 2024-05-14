@@ -1,0 +1,68 @@
+#account-layout {
+    background: var(--color-gray-000);
+
+    .container {
+
+
+        @include xl {
+            display: grid;
+            grid-template-columns: 2fr 5fr;
+            gap: 100px;
+            padding-bottom: 70px;
+            background: var(--color-gray-000);
+        }
+
+        aside {
+            border-bottom: 1px solid var(--color-gray-300);
+
+            @include xl {
+                padding-top: 40px;
+                border-right: 1px solid var(--color-gray-300);
+                padding-right: 20px;
+                background: var(--color-gray-000);
+                border-bottom: none;
+            }
+
+
+            .account-nav {
+                margin-top: 50px;
+                text-align: left;
+
+                .btn-account-nav {
+                    display: none;
+
+                    i {
+                        margin-right: 10px;
+                    }
+
+                    @include xl {
+                        display: block;
+                        margin: 10px 0;
+                        text-align: left;
+                        justify-content: flex-start;
+                    }
+                }
+
+                .btn-theme-s {
+
+                    @include xl {
+                        text-align: left;
+                        justify-content: flex-start;
+                    }
+                }
+            }
+
+/*            .account-mobile-nav {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15px;
+                padding-bottom: 30px;
+
+                @include xl {
+                    display: none;
+                }
+            }*/
+        }
+    }
+}
