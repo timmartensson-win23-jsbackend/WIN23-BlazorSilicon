@@ -4,9 +4,7 @@
 
 
 @inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
-@inject NavigationManager NavigationManager
-@inject IdentityUserAccessor UserAccessor
+
 
 <nav class="account-nav">
     <NavLink class="btn-account-nav" href="Account/Manage" Match="NavLinkMatch.All" ><i class=" fa-regular fa-gear"></i> Account Details</NavLink>
@@ -19,10 +17,6 @@
 @code {
     private bool hasExternalLogins;
 
-    private ApplicationUser user = default!;
-
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
