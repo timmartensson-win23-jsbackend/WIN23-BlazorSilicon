@@ -1,37 +1,45 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using BlazorWebApp.Data
+@rendermode InteractiveServer
+
 
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
+@inject IdentityUserAccessor UserAccessor
 
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage" Match="NavLinkMatch.All">Profile</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/Email">Email</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/ChangePassword">Password</NavLink>
-    </li>
-    @if (hasExternalLogins)
-    {
-        <li class="nav-item">
-            <NavLink class="nav-link" href="Account/Manage/ExternalLogins">External logins</NavLink>
-        </li>
-    }
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/TwoFactorAuthentication">Two-factor authentication</NavLink>
-    </li>
-    <li class="nav-item">
-        <NavLink class="nav-link" href="Account/Manage/PersonalData">Personal data</NavLink>
-    </li>
-</ul>
+<nav class="account-nav">
+    <NavLink class="btn-account-nav" href="Account/Manage" Match="NavLinkMatch.All" ><i class=" fa-regular fa-gear"></i> Account Details</NavLink>
+    <NavLink class="btn-account-nav" href="Account/Manage/ChangePassword"><i class="fa-regular fa-lock"></i> Security</NavLink>
+    <NavLink class="btn-account-nav" href="Account/Manage/SavedCourses"><i class="fa-regular fa-bookmark"></i> Saved Courses</NavLink>
+    <button class="btn btn-account-nav" @onclick="SignOut" Match="NavLinkMatch.All"><i class="fa-regular fa-arrow-left-from-bracket"></i> Sign out</button>
+</nav>
 
 @code {
     private bool hasExternalLogins;
 
+    private ApplicationUser user = default!;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
     protected override async Task OnInitializedAsync()
     {
         hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    }
+
+    private async Task SignOut()
+    {
+        try
+        {
+            await SignInManager.SignOutAsync();
+            NavigationManager.NavigateTo("/");
+            // If the method completes without throwing an exception, the user was signed out successfully
+        }
+        catch (Exception ex)
+        {
+            // If an exception is thrown, there was an issue during the sign-out process
+            Console.WriteLine(ex.Message);
+        }
     }
 }
