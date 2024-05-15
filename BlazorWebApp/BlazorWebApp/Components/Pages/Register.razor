@@ -1,4 +1,4 @@
-﻿@page "/Account/signup"
+﻿@page "/signup"
 @rendermode InteractiveServer
 
 
@@ -10,12 +10,10 @@
 @using BlazorWebApp.Data
 
 @inject UserManager<ApplicationUser> UserManager
-@inject IUserStore<ApplicationUser> UserStore
 @inject SignInManager<ApplicationUser> SignInManager
-@inject IEmailSender<ApplicationUser> EmailSender
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
-@inject IdentityRedirectManager RedirectManager
+
 
 <PageTitle>Sign up</PageTitle>
 
@@ -120,11 +118,11 @@
         await ServiceBusManager.SendMessageAsync(SignUpForm.Email);
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
-            RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = SignUpForm.Email, ["returnUrl"] = ReturnUrl });
+            NavigationManager.NavigateTo($"Account/RegisterConfirmation?email={SignUpForm.Email}&returnUrl={ReturnUrl}");
         }
 
         await SignInManager.SignInAsync(user, isPersistent: false);
-        RedirectManager.RedirectTo(ReturnUrl);
+        NavigationManager.NavigateTo(ReturnUrl ?? "/");
 
     }
 

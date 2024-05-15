@@ -1,4 +1,4 @@
-﻿@page "/Account/Manage/SignOut"
+﻿@page "/account/signout"
 @using BlazorWebApp.Data
 @using Microsoft.AspNetCore.Identity
 
@@ -7,7 +7,8 @@
 
 
 @code {
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         await SignInManager.SignOutAsync();
         NavigationManager.NavigateTo("/");
     }
