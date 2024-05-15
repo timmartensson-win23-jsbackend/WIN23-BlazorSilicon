@@ -10,7 +10,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IEmailSender<ApplicationUser> EmailSender
 @inject NavigationManager NavigationManager
-@inject IdentityRedirectManager RedirectManager
+
 
 <PageTitle>Register confirmation</PageTitle>
 
@@ -63,7 +63,7 @@
             user!.EmailConfirmed = true;
             await UserManager.UpdateAsync(user);
             
-            RedirectManager.RedirectTo("/account/signin");
+            NavigationManager.NavigateTo("/account/signin");
         }
         else
         {
@@ -82,10 +82,10 @@
     {
         if (Email is null)
         {
-            RedirectManager.RedirectTo("");
+            NavigationManager.NavigateTo("");
         }
 
-        var user = await UserManager.FindByEmailAsync(Email);
+        var user = await UserManager.FindByEmailAsync(Email!);
         if (user is null)
         {
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;

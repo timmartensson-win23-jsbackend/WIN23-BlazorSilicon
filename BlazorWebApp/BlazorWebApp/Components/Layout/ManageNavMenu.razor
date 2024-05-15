@@ -1,0 +1,27 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using BlazorWebApp.Data
+@rendermode InteractiveServer
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+<nav class="account-nav">
+    <NavLink class="btn-account-nav" href="Account/details" Match="NavLinkMatch.All" ><i class=" fa-regular fa-gear"></i> Account Details</NavLink>
+    <NavLink class="btn-account-nav" href="Account/Manage/ChangePassword"><i class="fa-regular fa-lock"></i> Security</NavLink>
+    <NavLink class="btn-account-nav" href="Account/Manage/Notifications"><i class="fa-regular fa-bell"></i> Notifications</NavLink>
+    <NavLink class="btn-account-nav" href="Account/Manage/SavedCourses"><i class="fa-regular fa-bookmark"></i> Saved Courses</NavLink>
+    <NavLink class="btn-account-nav" href="/account/signout"><i class="fa-regular fa-arrow-left-from-bracket"></i> Sign out</NavLink>
+</nav>
+
+@code {
+    private bool hasExternalLogins;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    }
+
+
+}
