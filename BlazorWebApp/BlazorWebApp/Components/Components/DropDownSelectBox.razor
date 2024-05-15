@@ -1,0 +1,18 @@
+﻿@rendermode InteractiveServer       
+@* rätt ovan??? *@
+
+<div class="selected" data-value="all">All categories<i class="fa-sharp fa-light fa-circle-caret-down"></i></div>
+<div class="select-options">
+
+    <div class="option" data-value="all">All Categories</div>
+    @*  @if (Model.Categories != null)
+    {
+    foreach (var category in Model.Categories)
+    {
+    <div class="option" data-value="@Html.Raw(@category.CategoryName)">@category.CategoryName</div>
+    }
+    } *@
+</div>
+@code {
+
+}
