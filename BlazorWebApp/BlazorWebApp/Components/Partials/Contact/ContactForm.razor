@@ -1,0 +1,46 @@
+﻿@using BlazorWebApp.Models.Contact
+@rendermode InteractiveServer
+
+<EditForm Model="Model" method="post" OnValidSubmit="HandleSubmit" FormName="contact" novalidate>
+    <DataAnnotationsValidator />
+
+   
+    <h2>Contact Us</h2>
+    <div class="form-content">
+        <div id="form-fullname" class="input-group">
+            <label for="Name">Name</label>
+            <span for="Name"></span>
+            <InputText @bind-Value="Model.Name" />
+        </div>
+        <div id="form-email" class="input-group">
+            <label for="Email">Email</label>
+            <span for="Email"></span>
+            <InputText typeof="email" @bind-Value="Model.Email" />
+        </div>
+        <div id="form-service" class="input-group">
+            <label for="Service">Service</label>
+            <select for="Service">
+                <option value="Choose">Choose the service you are interested in...</option>
+                <option value="Account">Account</option>
+                <option value="Courses">Courses</option>
+                <option value="Tools">Tools</option>
+            </select>
+        </div>
+        <div id="form-message" class="input-group">
+            <label for="Message">Message</label>
+            <span for="Message"></span>
+            <InputTextArea @bind-Value="Model.Message"></InputTextArea>
+        </div>
+        <button class="btn-theme-s" type="submit">Send Contact Request</button>
+    </div>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    public ContactFormModel Model { get; set; } = new ContactFormModel();
+
+    private async Task HandleSubmit()
+    {
+                                                // om tid över implementera funktionaliteten mot en azurefunction
+    }
+}
