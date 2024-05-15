@@ -1,18 +1,58 @@
-﻿
+﻿@using BlazorWebApp.Data
+@using BlazorWebApp.Models
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+
 @inherits LayoutComponentBase
 @layout AccountLayout
 
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject ApplicationDbContext DbContext
 
-<div class="wrapper">
-    <section class="account-layout" id="account-layout">
-        <div class="container">
-            <aside>
-                <ProfileInfo />
-                <ManageNavMenu />
-            </aside>
-            <main>
-                @Body
-            </main>
-        </div>
-    </section>
-</div>
+<CascadingValue Value="user">
+    <div class="wrapper">
+        <section class="account-layout" id="account-layout">
+            <div class="container">
+                <aside>
+                    <ProfileAvatar />
+                    <ManageNavMenu />
+                </aside>
+                <main>
+                    @Body
+                </main>
+            </div>
+        </section>
+    </div>
+</CascadingValue>
+
+
+
+@code {
+    private ApplicationUser appUser = default!;
+    private string? username;
+    private string? phoneNumber;
+
+    private CascadingUser user = new();
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        appUser = await UserManager.Users
+                                 .Include(u => u.UserProfile)
+                                 .FirstOrDefaultAsync(u => u.UserName == HttpContext.User.Identity.Name) ?? null!;
+
+        if (appUser != null)
+        {
+            username = appUser.UserName;
+            phoneNumber = appUser.PhoneNumber;
+            user.AppUser = appUser;
+            user.UserProfile = appUser.UserProfile;
+            user.Username = username!;
+            user.PhoneNumber = phoneNumber!;
+        }
+    }
+
+}

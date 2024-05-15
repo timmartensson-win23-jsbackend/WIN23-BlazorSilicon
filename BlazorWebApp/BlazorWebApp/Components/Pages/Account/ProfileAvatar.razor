@@ -1,0 +1,47 @@
+﻿@using BlazorWebApp.Data
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@attribute [StreamRendering]
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+
+
+@if (User == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <section class="account-profileinfo" id="account-profileinfo">
+        <div class="profile">
+            <div class="image">
+                <img src="/uploads/@(User.UserProfile?.ProfileImage ?? placeholderImage)" alt="profile image" />
+            </div>
+            @*         <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
+        <input id="upload-file" type="file" name="file" hidden />
+        <label for="upload-file" class="btn-cirkle"><i class="fa-regular fa-refresh"></i></label>
+        </form> *@
+        </div>
+        <div class="info">
+            <h3 class="display-name">@User.Username</h3>
+            <p class="email">@User.Username</p>
+        </div>
+    </section>
+}
+
+
+
+
+@code {
+    private string placeholderImage = "/images/placeholder-image.png";
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [CascadingParameter]
+    protected CascadingUser User { get; set; } = default!;
+
+
+
+}

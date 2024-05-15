@@ -1,6 +1,7 @@
 ﻿@page "/account/details"
 
 @using System.ComponentModel.DataAnnotations
+@using BlazorWebApp.Models
 @using Microsoft.AspNetCore.Identity
 @using BlazorWebApp.Data
 
@@ -31,21 +32,25 @@
 </div>
 
 @code {
-    private ApplicationUser user = default!;
+
     private string? username;
     private string? phoneNumber;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
+    [CascadingParameter]
+    protected CascadingUser user { get; set; } = default!;
+
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
+
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
-        username = await UserManager.GetUserNameAsync(user);
-        phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+        // appUser = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        // username = await UserManager.GetUserNameAsync(user);
+        // phoneNumber = await UserManager.GetPhoneNumberAsync(user);
 
         Input.PhoneNumber ??= phoneNumber;
     }
@@ -54,14 +59,14 @@
     {
         if (Input.PhoneNumber != phoneNumber)
         {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user.AppUser, Input.PhoneNumber);
             if (!setPhoneResult.Succeeded)
             {
                 // RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
             }
         }
 
-        await SignInManager.RefreshSignInAsync(user);
+        await SignInManager.RefreshSignInAsync(user.AppUser);
     }
 
     private sealed class InputModel
