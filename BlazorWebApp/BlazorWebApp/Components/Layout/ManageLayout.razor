@@ -9,6 +9,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ApplicationDbContext DbContext
+@inject UserService UserService
 
 <CascadingValue Value="user">
     <div class="wrapper">
@@ -29,30 +30,14 @@
 
 
 @code {
-    private ApplicationUser appUser = default!;
-    private string? username;
-    private string? phoneNumber;
-
-    private CascadingUser user = new();
+    private ApplicationUser user = default!;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        appUser = await UserManager.Users
-                                 .Include(u => u.UserProfile)
-                                 .FirstOrDefaultAsync(u => u.UserName == HttpContext.User.Identity.Name) ?? null!;
-
-        if (appUser != null)
-        {
-            username = appUser.UserName;
-            phoneNumber = appUser.PhoneNumber;
-            user.AppUser = appUser;
-            user.UserProfile = appUser.UserProfile;
-            user.Username = username!;
-            user.PhoneNumber = phoneNumber!;
-        }
+        user = await UserService.GetCurrentUserAsync(HttpContext);
     }
 
 }

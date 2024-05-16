@@ -1,7 +1,6 @@
 using BlazorWebApp;
 using BlazorWebApp.Components;
 using BlazorWebApp.Data;
-using BlazorWebApp.Models;
 using BlazorWebApp.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -21,8 +20,7 @@ builder.Services.AddSingleton<ServiceBusManager>();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 
-builder.Services.AddCascadingValue(sp => new CascadingUser() { });
-
+builder.Services.AddScoped<UserService>();
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;

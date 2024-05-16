@@ -8,7 +8,6 @@
 @using System.ComponentModel.DataAnnotations
 
 @inject UserManager<ApplicationUser> UserManager
-@inject IEmailSender<ApplicationUser> EmailSender
 @inject NavigationManager NavigationManager
 
 
@@ -63,7 +62,7 @@
             user!.EmailConfirmed = true;
             await UserManager.UpdateAsync(user);
             
-            NavigationManager.NavigateTo("/account/signin");
+            NavigationManager.NavigateTo("/signin");
         }
         else
         {

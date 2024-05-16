@@ -13,6 +13,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
+@inject ApplicationDbContext DbContext
 
 
 <PageTitle>Sign up</PageTitle>
@@ -98,13 +99,28 @@
 
     public async Task HandleSubmit(EditContext editContext)
     {
+        var userProfile = new UserProfile
+        {
+            FirstName = SignUpForm.FirstName,
+            LastName = SignUpForm.LastName
+        };
+        await DbContext.UserProfiles.AddAsync(userProfile);
+
+        var userAddress = new UserAddress
+        {
+            AddressLine_1 = "your addressline 1",
+            AddressLine_2 = "your addressline 2",
+            PostalCode = "your postal code",
+            City = "your city"
+        };
+        await DbContext.UserAddresses.AddAsync(userAddress);
+
+        await DbContext.SaveChangesAsync();
+
         var user = new ApplicationUser
         {
-            UserProfile = new UserProfile
-            {
-                FirstName = SignUpForm.FirstName,
-                LastName = SignUpForm.LastName
-            },
+            UserProfileId = userProfile.Id,
+            UserAddressId = userAddress.Id,
             UserName = SignUpForm.Email,
             Email = SignUpForm.Email
         };

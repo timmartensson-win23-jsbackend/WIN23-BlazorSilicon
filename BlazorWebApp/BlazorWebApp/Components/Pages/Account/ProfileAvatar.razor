@@ -8,7 +8,7 @@
 @inject ApplicationDbContext DbContext
 
 
-@if (User == null)
+@if (user == null)
 {
     <p>Loading...</p>
 }
@@ -17,7 +17,7 @@ else
     <section class="account-profileinfo" id="account-profileinfo">
         <div class="profile">
             <div class="image">
-                <img src="/uploads/@(User.UserProfile?.ProfileImage ?? placeholderImage)" alt="profile image" />
+                <img src="/uploads/@(user.UserProfile?.ProfileImage ?? placeholderImage)" alt="profile image" />
             </div>
             @*         <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
         <input id="upload-file" type="file" name="file" hidden />
@@ -25,8 +25,8 @@ else
         </form> *@
         </div>
         <div class="info">
-            <h3 class="display-name">@User.Username</h3>
-            <p class="email">@User.Username</p>
+            <h3 class="display-name">@user.UserProfile!.FirstName @user.UserProfile.LastName</h3>
+            <p class="email">@user.Email</p>
         </div>
     </section>
 }
@@ -40,7 +40,7 @@ else
     private HttpContext HttpContext { get; set; } = default!;
 
     [CascadingParameter]
-    protected CascadingUser User { get; set; } = default!;
+    protected ApplicationUser user { get; set; } = default!;
 
 
 
