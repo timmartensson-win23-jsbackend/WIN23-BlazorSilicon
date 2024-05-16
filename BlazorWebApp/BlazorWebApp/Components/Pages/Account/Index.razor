@@ -13,37 +13,94 @@
 
 <PageTitle>Profile</PageTitle>
 
-<h3>Profile</h3>
 
 @if (user == null)
 {
     <div>Loading...</div>
 }
 else
-{
-    <div class="row">
-        <div class="col-md-6">
-            <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-                <DataAnnotationsValidator />
-                <ValidationSummary class="text-danger" role="alert" />
-                <div class="form-floating mb-3">
-                    <input type="text" value="@user.UserName" class="form-control" placeholder="Please choose your username." disabled />
-                    <label for="username" class="form-label">Username</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                    <label for="phone-number" class="form-label">Phone number</label>
-                    <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-                </div>
+{<section id="account-details"> 
+    <div class="details">
+        <div class="basic-info">
+                <EditForm Model="Input" FormName="BasicInfo" OnValidSubmit="OnValidSubmitAsync" method="post">
+                    <div class="content">
+                        <div id="form-email" class="input-group">
+                            <label for="Email">Email</label>
+                            <Input type="text" id="Email" Value="@user.Email" disabled />
+                            <div class="validation-message">
+                            </div>
+                        </div>
 
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-                <p>@user.UserProfile!.LastName</p>
-                <p>@user.UserProfile!.FirstName</p>
+                        <div id="form-firstname" class="input-group">
+                            <label for="FirstName">First Name</label>
+                            <InputText id="FirstName" @bind-Value="Input.FirstName" placeholder="@user.UserProfile!.FirstName" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.FirstName)" />
+                            </div>
+                        </div>
+
+                        <div id="form-lastname" class="input-group">
+                            <label for="Lastname">Last Name</label>
+                            <InputText id="Lastname" @bind-Value="Input.LastName" placeholder="@user.UserProfile!.LastName" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.LastName)" />
+                            </div>
+                        </div>
+
+                        <div id="form-bio" class="input-group">
+                            <label for="Biography">Biography</label>
+                            <InputText id="Biography" @bind-Value="Input.Biography" placeholder="write something about yourself" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.Biography)" />
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div id="form-addressline-1" class="input-group">
+                            <label for="Addressline-1">Addressline 1</label>
+                            <InputText id="Lastname" @bind-Value="Input.AddressLine_1" placeholder="Addressline 1" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.AddressLine_1)" />
+                            </div>
+                        </div>
+
+                        <div id="form-addressline-2" class="input-group">
+                            <label for="Addressline-2">Addressline 2</label>
+                            <InputText id="Addressline-2" @bind-Value="Input.AddressLine_2" placeholder="Addressline 2" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.AddressLine_2)" />
+                            </div>
+                        </div>
+
+                        <div id="form-postalcode" class="input-group">
+                            <label for="Postalcode">Postal code</label>
+                            <InputText id="Lastname" @bind-Value="Input.PostalCode" placeholder="Enter your postal code" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.PostalCode)" />
+                            </div>
+                        </div>
+
+                        <div id="form-city" class="input-group">
+                            <label for="Lastname">Last Name</label>
+                            <InputText id="Lastname" @bind-Value="Input.City" placeholder="Enter your city" />
+                            <div class="validation-message">
+                                <ValidationMessage For="@(() => Input.City)" />
+                            </div>
+                        </div>
 
 
-            </EditForm>
+
+                        <div class="form-buttons">
+                            <button class="btn-gray" type="reset">Cancel</button>
+                            <button class="btn-theme" type="submit">Save changes</button>
+                        </div>
+
+                    </div>
+                </EditForm>
         </div>
     </div>
+</section>
 }
 
 @code {
@@ -53,18 +110,21 @@ else
     [CascadingParameter]
     protected ApplicationUser user { get; set; } = default!;
 
-
-    private string? username;
-    private string? phoneNumber;
-
-
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
 
 
+
+
     protected override async Task OnInitializedAsync()
     {
-
+        // Input.FirstName = user.UserProfile!.FirstName;
+        // Input.LastName = user.UserProfile!.LastName;
+        // Input.Biography = user.UserProfile!.Biography;
+        // Input.AddressLine_1 = user.UserAddress!.AddressLine_1;
+        // Input.AddressLine_2 = user.UserAddress!.AddressLine_2;
+        // Input.PostalCode = user.UserAddress!.PostalCode;
+        // Input.City = user.UserAddress!.City;
 
     }
 
@@ -73,22 +133,18 @@ else
     {
 
 
-        if (Input.PhoneNumber != phoneNumber)
-        {
-            var setPhoneResult = await UserManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-            if (!setPhoneResult.Succeeded)
-            {
-                // RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
-            }
-        }
-
         await SignInManager.RefreshSignInAsync(user);
     }
 
     private sealed class InputModel
     {
-        [Phone]
-        [Display(Name = "Phone number")]
-        public string? PhoneNumber { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? Biography { get; set; }
+        public string? AddressLine_1 { get; set; }
+        public string? AddressLine_2 { get; set; }
+        public string? PostalCode { get; set; }
+        public string? City { get; set; }
     }
+
 }

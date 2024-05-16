@@ -17,7 +17,7 @@ else
     <section class="account-profileinfo" id="account-profileinfo">
         <div class="profile">
             <div class="image">
-                <img src="/uploads/@(user.UserProfile?.ProfileImage ?? placeholderImage)" alt="profile image" />
+                <img src="@placeholderImage" alt="profile image" />
             </div>
             @*         <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
         <input id="upload-file" type="file" name="file" hidden />
@@ -35,7 +35,7 @@ else
 
 
 @code {
-    private string placeholderImage = "/images/placeholder-image.png";
+    private string placeholderImage = "/images/profile-image.svg";
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 

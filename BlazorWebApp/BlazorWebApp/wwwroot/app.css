@@ -2243,6 +2243,49 @@ section #skills .container .image img {
   }
 }
 
+#account-profileinfo {
+  padding-top: 30px;
+}
+#account-profileinfo .profile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 10px;
+  /*        form {
+              position: absolute;
+              z-index: 1;
+              left: 60%;
+              bottom: 0;
+
+
+              @include lg {
+                  left: 54%;
+              }
+
+              @include xl {
+                  left: 60%;
+              }
+          }*/
+}
+#account-profileinfo .profile .image {
+  border-radius: 50%;
+}
+#account-profileinfo .profile .image img {
+  height: 140px;
+  width: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+#account-profileinfo .info {
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 h1:focus {
   outline: none;
 }
