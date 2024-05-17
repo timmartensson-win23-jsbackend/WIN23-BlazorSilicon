@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+@layout AccountLayout
+
+
+
+<div class="wrapper">
+    <section class="admin-layout" id="admin-layout">
+        <div class="container">
+            <div>
+                <BlazorWebApp.Components.Pages.Admin.AdminPortal />
+                <ManageNavMenu />
+            </div>
+            <main>
+                @Body
+            </main>
+        </div>
+    </section>
+</div>
+
+@code {
+
+}
