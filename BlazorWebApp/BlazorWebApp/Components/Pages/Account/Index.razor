@@ -3,35 +3,50 @@
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Identity
 @using BlazorWebApp.Data
+@using Microsoft.EntityFrameworkCore
+@attribute [StreamRendering]
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject ApplicationDbContext DbContext
 
 <PageTitle>Profile</PageTitle>
 
 <h3>Profile</h3>
 
-<div class="row">
-    <div class="col-md-6">
-        <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
-                <label for="username" class="form-label">Username</label>
-            </div>
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
-                <label for="phone-number" class="form-label">Phone number</label>
-                <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
-        </EditForm>
+@if(userProfile == null || userAddress == null || user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6">
+            <EditForm Model="Input" FormName="profile" OnValidSubmit="OnValidSubmitAsync" method="post">
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" role="alert" />
+                <div class="form-floating mb-3">
+                    <input type="text" value="@username" class="form-control" placeholder="Please choose your username." disabled />
+                    <label for="username" class="form-label">Username</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <InputText @bind-Value="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                    <label for="phone-number" class="form-label">Phone number</label>
+                    <ValidationMessage For="() => Input.PhoneNumber" class="text-danger" />
+                </div>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+                <p>@(user?.UserProfileId ?? "Loading...")</p>
+                <p>@userProfile.FirstName</p>
+            </EditForm>
+        </div>
     </div>
-</div>
+}
+
 
 @code {
     private ApplicationUser user = default!;
+    private UserProfile? userProfile = default!;
+    private UserAddress? userAddress = default!;
     private string? username;
     private string? phoneNumber;
 
@@ -43,7 +58,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        
+
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!; 
+        userProfile = await DbContext.UserProfiles.FirstOrDefaultAsync(x => x.Id == user.UserProfileId);
+        userAddress = await DbContext.UserAddresses.FirstOrDefaultAsync(x => x.Id == user.UserAddressId);
+
+
         username = await UserManager.GetUserNameAsync(user);
         phoneNumber = await UserManager.GetPhoneNumberAsync(user);
 
