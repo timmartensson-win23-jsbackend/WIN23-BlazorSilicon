@@ -1,10 +1,21 @@
 ﻿@using BlazorWebApp.Data
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+
 
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
+@inject ApplicationDbContext DbContext
+@inject SemaphoreSlim Semaphore
 
+@if (userProfile == null || user == null)
+{
+    <p>Loading...</p>
+} else
+{
+    <p>@userProfile.FirstName</p>
+}
 
 <h3>ProfileInfo</h3>
 @* <section class="account-profileinfo" id="account-profileinfo">
@@ -25,18 +36,30 @@
 
 
 @code {
+    private ApplicationUser user = default!;
+    private UserProfile? userProfile = default!;
+
+
     // private string placeholderImage = "/images/profile-image.svg";
 
 
-    // private ApplicationUser user = default!;
 
-    // [CascadingParameter]
-    // private HttpContext HttpContext { get; set; } = default!;
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     profileInfo = await UserAccessor.GetRequiredUserAsync(HttpContext);
-    // }
+    protected override async Task OnInitializedAsync()
+    {
+        await Semaphore.WaitAsync();
+        try
+        {
+            user = await UserManager.GetUserAsync(HttpContext.User);
+            userProfile = await DbContext.UserProfiles.FirstOrDefaultAsync(x => x.Id == user.UserProfileId);
+        }
+        finally
+        {
+            Semaphore.Release();
+        }
+    }
 
 
 
