@@ -206,20 +206,26 @@ else
     {
         [Phone]
         [Display(Name = "Phone number")]
+        [Required(ErrorMessage = "Phone number is required.")]
         public string? PhoneNumber { get; set; }
 
+        [Required(ErrorMessage = "First name is required.")]
         public string? FirstName { get; set; }
 
+        [Required(ErrorMessage = "Last name is required.")]
         public string? LastName { get; set; }
 
         public string? Biography { get; set; }
 
+        [Required(ErrorMessage = "Addressline 1 is required.")]
         public string? AddressLine_1 { get; set; }
 
         public string? AddressLine_2 { get; set; }
 
+        [Required(ErrorMessage = "Postal code is required.")]
         public string? PostalCode { get; set; }
 
+        [Required(ErrorMessage = "City is required.")]
         public string? City { get; set; }
     }
 }
