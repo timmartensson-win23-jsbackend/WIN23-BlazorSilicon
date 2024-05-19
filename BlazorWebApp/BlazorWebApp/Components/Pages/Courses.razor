@@ -1,26 +1,42 @@
 ﻿@page "/courses"
+@attribute [StreamRendering]
+@* @attribute [Authorize] *@                @* <------   öppna upp kommentar sen!   *@
+@inject HttpClient http
+@inject NavigationManager Navigation
+
 
 <PageTitle>Courses</PageTitle>
 
 <section>
-    <div class="courses container">
-        @*There's a script tied to this span*@
-        <span id="statusMessage" class="message-container"></span>
+    <div class="courses container">       
         <div class="section-title">
             <h1 class="h1">Courses</h1>
             <div class="search-div">
                 <div class="dropdown select">
-                    <BlazorWebApp.Components.Components.DropDownSelectBox/>
+                    <select class="selected" @onchange="OnCategoryChange"><i class="fa-sharp fa-light fa-circle-caret-down"></i>
+                        <option value="all" class="select-options">All categories</option>
+                        <div class="option" data-value="all">All Categories</div>
+                        @if (categories != null)
+                        {
+                            foreach (var category in categories)
+                            {
+                                <option class="option" value="@category.CategoryName">@category.CategoryName</option>
+                            }
+                        }
+                    </select>
                 </div>
                 <div class="search">
-                    <BlazorWebApp.Components.Components.SearchBox/>
+                    <input id="searchQuery" type="search" name="searchQuery" placeholder="Search courses" />
+                    <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
                 </div>
             </div>
         </div>
-        @* @if(courses == null)
+
+        @if(courses == null)
         {
-            <p>loading...</p>
+            <p>Loading...</p>
         }
+
         else
         {
             <div class="items">
@@ -28,9 +44,9 @@
                 @foreach (var course in courses)
                 {
                     <div class="course-card">
-                        <div class="content" onclick="location.href='@Url.Action("CourseDetails", "Courses", new { id = course.Id })' ">
+                        <div class="content" @onclick="() => NavToCourseDetails(course.Id!)">
                             <div class="image">
-                                <img src="~/images/course.CourseImage" alt="" />
+                                <img src="~/images/@course.CourseImage" alt="" />
 
                                 @if (course.IsBestSeller)
                                 {
@@ -59,7 +75,7 @@
                             <footer>
                                 <div>
                                     <i class="fa-sharp fa-solid fa-clock"></i>
-                                    <p>course.ViewHours hours</p>
+                                    <p>@course.ViewHours hours</p>
                                 </div>
                                 <div>
                                     <i class="fa-sharp fa-light fa-thumbs-up"></i>
@@ -69,37 +85,75 @@
                         </div>
                     </div>
                 }
-            </div> *@
+            </div>
 
-            @* if (courses.Pagination != null && Model.Pagination.TotalPages > 1)
+           @*  if (Pagination != null && Pagination.TotalPages > 1)
             {
                 <div class="pagination">
-                    @for (int i = 1; i <= Model.Pagination.TotalPages; i++)
+                    @for (int i = 1; i <= Pagination.TotalPages; i++)
                     {
-                        if (i == Model.Pagination.CurrentPage)
+                        if (i == Pagination.CurrentPage)
                         {
                             <span class="number active">@i</span>
                         }
                         else
                         {
-                            <a class="number" href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.Pagination.PageSize })">@i</a>
+                            <a class="number" @onclick="() => NavToPage(i)">@i</a>
                         }
                     }
                 </div>
             } *@
-        }
-        @* @if (ViewData["Status"]?.ToString() == "ConnectionFailed")
-        {
-            <span class="alert alert-danger">Failed to contact server. Please try again later...</span>
-        } *@
+        }        
     </div>
-
-
-    <BlazorWebApp.Components.Partials.Courses.SkillsPartial/>
 </section>
 
 
 
 @code {
+    private List<CoursesModel>? courses;
+    private List<CategoryModel>? categories;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GraphQLQuery { Query = "{getAllCourses {id title isBestSeller category {categoryName} courseImage authorName discountPrice price viewHours likesInPercent likesInNumbers}}" };
+        var respons = await Http.PostAsJsonAsync("http://localhost:7209/api/graphql", query);
+
+        if (respons.IsSuccessStatusCode)
+        {
+            var result = await respons.Content.ReadFromJsonAsync<DynamicGraphQLResponse>();
+            courses = result?.Data.GetProperty("getAllCourses").EnumerateArray().Select(course => new CoursesModel
+            {
+                Id = course.GetProperty("id").GetString(),
+                Title = course.GetProperty("title").GetString()!,
+                IsBestSeller = course.GetProperty("isBestSeller").GetBoolean(),
+                Category = $"{course.GetProperty("category").GetProperty("categoryName").GetString()}",
+                CourseImage = course.GetProperty("courseImage").GetString(),
+                AuthorName = course.GetProperty("authorName").GetString(),
+                DiscountPrice = course.GetProperty("discountPrice").GetString(),
+                Price = course.GetProperty("price").GetString(),
+                ViewHours = course.GetProperty("viewHours").GetString(),
+                LikesInPercent = course.GetProperty("likesInPercent").GetString(),
+                LikesInNumbers = course.GetProperty("likesInNumbers").GetString()
+
+            })
+            .ToList();
+        }
+    }
+
+    private void NavToCourseDetails(string courseId)
+    {
+        Navigation.NavigateTo($"/coursedetails/{courseId}");
+    }
+
+    private void OnCategoryChange(ChangeEventArgs e)
+    {
+        var selectedCategory = e.Value?.ToString();
+                                                            // Hantera valet av kategori här, ladda data baserat på den valda kategorin. Hur?
+        Console.WriteLine($"Selected category: {selectedCategory}");
+    }
+
+    private void NavToPage(int pageNumber)
+    {
+        // Navigation.NavigateTo($"/courses?pageNumber={pageNumber}&pageSize={Pagination.PageSize}");
+    }
 }
