@@ -3,8 +3,8 @@
 public class CoursesModel
 {
     // GeneralCourseInfo
-    public int Id { get; set; }
-    public bool IsBestSeller { get; set; } = false;
+    public string? Id { get; set; }
+    public bool IsBestSeller { get; set; }
     public string? CourseImage { get; set; }
     public string? CourseImageAltText { get; set; }
     public string Title { get; set; } = null!;
@@ -37,7 +37,4 @@ public class CoursesModel
 
     public string? Category { get; set; }
 
-    public IEnumerable<CategoryModel>? Categories { get; set; }
-    public IEnumerable<CoursesModel>? AllCourses { get; set; }
-    public PaginationModel? Pagination { get; set; }
 }
