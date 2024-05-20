@@ -1,7 +1,76 @@
 ﻿@page "/account/security"
+@using System.ComponentModel.DataAnnotations
 
-<h3>Security</h3>
+<section id="account-security">
+    <div class="change-password">
+        <EditForm FormName="ChangePassword" OnValidSubmit="ChangePasswordAsync">
+            <h2>Account Details</h2>
+            <h5>Password</h5>
+
+            <div class="content">
+                <div id="form-current-password" class="input-group">
+                    <label for="Current Password">Current Password</label>
+                    <InputText type="password" id="CurrentPassword" @bind-Value="@PasswordForm.CurrentPassword" placeholder="Your current password" />
+                    <div class="validation-message">
+                        <ValidationMessage For="@(() => PasswordForm.CurrentPassword)" />
+                    </div>
+                </div>
+
+                <div id="form-new-password" class="input-group">
+                    <label for="New Password">New Password</label>
+                    <InputText type="password" id="NewPassword" @bind-Value="@PasswordForm.NewPassword" placeholder="Your new password" />
+                    <div class="validation-message">
+                        <ValidationMessage For="@(() => PasswordForm.NewPassword)" />
+                    </div>
+                </div>
+
+                <div id="form-confirm-password" class="input-group">
+                    <label for="Confirm New Password">Confirm New Password</label>
+                    <InputText type="password" id="ConfirmNewPassword" @bind-Value="@PasswordForm.ConfirmNewPassword" placeholder="Confirm your new password" />
+                    <div class="validation-message">
+                        <ValidationMessage For="@(() => PasswordForm.ConfirmNewPassword)" />
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button class="btn-gray" type="reset">Cancel</button>
+                    <button class="btn-theme" type="submit">Change password</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+    <hr />
+    <div class="delete-account">
+
+    </div>
+</section>
 
 @code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
+    [SupplyParameterFromForm]
+    private PasswordModel PasswordForm { get; set; } = new();
+
+    private async Task ChangePasswordAsync()
+    {
+
+    }
+
+    public class PasswordModel
+    {
+        [Required]
+        [DataType(DataType.Password)]
+        public string CurrentPassword { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Invalid password")]
+        [DataType(DataType.Password)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$", ErrorMessage = "Password needs one uppercase letter, one number and special character")]
+        public string NewPassword { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Password does not match")]
+        [DataType(DataType.Password)]
+        [Compare("NewPassword")]
+        public string ConfirmNewPassword { get; set; } = string.Empty;
+    }
 }
