@@ -2243,6 +2243,175 @@ section #skills .container .image img {
   }
 }
 
+#account-index {
+  background: var(--color-gray-000);
+}
+#account-index .error-message {
+  padding: 10px 40px;
+  color: var(--color-gray-800);
+  background-color: var(--color-weak-danger);
+  border: 1px solid var(--color-danger) !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+#account-index .details {
+  margin-top: 50px;
+  width: 100%;
+  /*        .address-info {
+      margin-top: 30px;
+
+      form {
+          padding: 1rem;
+
+          h5 {
+              color: var(--color-theme);
+              text-align: center;
+
+              @include xl {
+                  text-align: start;
+              }
+          }
+
+          .content {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              text-align: center;
+
+
+              @include xl {
+                  display: grid;
+                  gap: 1rem 2rem;
+                  grid-template-columns: 1fr 1fr;
+                  grid-template-areas: "addressline_1 addressline_1" "addressline_2 addressline_2" "postalcode city" "buttons buttons";
+                  text-align: start;
+              }
+
+              #form-addressline-1 {
+                  grid-area: addressline_1;
+              }
+
+              #form-addressline-2 {
+                  grid-area: addressline_2;
+
+                  span {
+                      color: var(--color-gray-500);
+                      font-weight: 400;
+                  }
+              }
+
+              #form-postalcode {
+                  grid-area: postalcode;
+              }
+
+              #form-city {
+                  grid-area: city;
+              }
+
+              .form-buttons {
+                  grid-area: buttons;
+                  margin: 20px 0;
+                  display: flex;
+                  gap: 20px;
+              }
+          }
+      }
+  }*/
+}
+#account-index .details .basic-info form {
+  padding: 1rem;
+}
+#account-index .details .basic-info form input[disabled] {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-gray-400);
+}
+#account-index .details .basic-info form h2 {
+  text-align: center;
+}
+@media (min-width: 1200px) {
+  #account-index .details .basic-info form h2 {
+    text-align: start;
+  }
+}
+#account-index .details .basic-info form h5 {
+  color: var(--color-theme);
+  text-align: center;
+}
+@media (min-width: 1200px) {
+  #account-index .details .basic-info form h5 {
+    text-align: start;
+  }
+}
+#account-index .details .basic-info form .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+@media (min-width: 1200px) {
+  #account-index .details .basic-info form .content {
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "firstname lastname" "email phone" "bio bio" "hr hr" "addressline_1 addressline_1" "addressline_2 addressline_2" "postalcode city" "buttons buttons";
+    text-align: start;
+  }
+}
+#account-index .details .basic-info form .content #form-firstname {
+  grid-area: firstname;
+}
+#account-index .details .basic-info form .content #form-lastname {
+  grid-area: lastname;
+}
+#account-index .details .basic-info form .content #form-email {
+  grid-area: email;
+}
+#account-index .details .basic-info form .content #form-phone {
+  grid-area: phone;
+}
+#account-index .details .basic-info form .content #form-phone span {
+  color: var(--color-gray-500);
+  font-weight: 400;
+}
+#account-index .details .basic-info form .content #form-bio {
+  grid-area: bio;
+}
+#account-index .details .basic-info form .content #form-bio span {
+  color: var(--color-gray-500);
+  font-weight: 400;
+}
+#account-index .details .basic-info form .content hr {
+  grid-area: hr;
+  margin-top: 30px;
+}
+#account-index .details .basic-info form .content #form-addressline-1 {
+  grid-area: addressline_1;
+}
+#account-index .details .basic-info form .content #form-addressline-2 {
+  grid-area: addressline_2;
+}
+#account-index .details .basic-info form .content #form-addressline-2 span {
+  color: var(--color-gray-500);
+  font-weight: 400;
+}
+#account-index .details .basic-info form .content #form-postalcode {
+  grid-area: postalcode;
+}
+#account-index .details .basic-info form .content #form-city {
+  grid-area: city;
+}
+#account-index .details .basic-info form .content .form-buttons {
+  grid-area: buttons;
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+}
+
 h1:focus {
   outline: none;
 }
