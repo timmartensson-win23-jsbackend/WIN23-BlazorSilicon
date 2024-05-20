@@ -21,10 +21,12 @@
 }
 else
 {
-    <section id="account-details"> 
+    <section id="account-index"> 
         <div class="details">
             <div class="basic-info">
                     <EditForm Model="Input" FormName="BasicInfo" OnValidSubmit="OnValidSubmitAsync" method="post">
+                        <DataAnnotationsValidator />
+
                         <div class="content">
                         <div id="form-email" class="input-group">
                             <label for="Email">Email address</label>
@@ -34,7 +36,7 @@ else
                         </div>
 
                             <div id="form-phone" class="input-group">
-                                <label for="PhoneNumber">Phone number</label>
+                            <label for="PhoneNumber">Phone number <span>(optional)</span></label>
                                     <InputText type="text" id="Email" @bind-Value="Input.PhoneNumber" />
                                 <div class="validation-message">
                                 </div>
@@ -57,8 +59,8 @@ else
                             </div>
 
                             <div id="form-bio" class="input-group">
-                                <label for="Biography">Biography</label>
-                                <InputText id="Biography" @bind-Value="Input.Biography" placeholder="write something about yourself" />
+                            <label for="Biography">Biography <span>(optional)</span></label>
+                                <InputTextArea id="Biography" @bind-Value="Input.Biography" placeholder="write something about yourself" />
                                 <div class="validation-message">
                                     <ValidationMessage For="@(() => Input.Biography)" />
                                 </div>
@@ -75,7 +77,7 @@ else
                             </div>
 
                             <div id="form-addressline-2" class="input-group">
-                                <label for="Addressline-2">Addressline 2</label>
+                            <label for="Addressline-2">Addressline 2 <span>(optional)</span></label>
                                 <InputText id="Addressline-2" @bind-Value="Input.AddressLine_2" placeholder="Addressline 2" />
                                 <div class="validation-message">
                                     <ValidationMessage For="@(() => Input.AddressLine_2)" />
@@ -91,7 +93,7 @@ else
                             </div>
 
                             <div id="form-city" class="input-group">
-                                <label for="Lastname">Last Name</label>
+                                <label for="City">City</label>
                                 <InputText id="Lastname" @bind-Value="Input.City" placeholder="Enter your city" />
                                 <div class="validation-message">
                                     <ValidationMessage For="@(() => Input.City)" />
@@ -170,21 +172,22 @@ else
             {
                 // RedirectManager.RedirectToCurrentPageWithStatus("Error: Failed to set phone number.", HttpContext);
             }
-            if (Input.FirstName != null)
+            if (!string.IsNullOrEmpty(Input.FirstName) && Input.FirstName != firstName)
             {
                 userProfile!.FirstName = Input.FirstName;
             }
-            if (Input.LastName != null)
+            if (!string.IsNullOrEmpty(Input.LastName) && Input.LastName != lastName)
             {
                 userProfile!.LastName = Input.LastName;
             }
             userProfile!.Biography = Input.Biography;
 
-            if (Input.AddressLine_1 != null)
+            if (!string.IsNullOrEmpty(addressLine_1) && Input.AddressLine_1 != addressLine_1)
             {
-                userAddress!.AddressLine_1 = Input.AddressLine_1;
+                userAddress!.AddressLine_1 = Input.AddressLine_1!;
             }
             userAddress!.AddressLine_2 = Input.AddressLine_2;
+
             if (Input.PostalCode != null)
             {
                 userAddress!.PostalCode = Input.PostalCode;
@@ -210,9 +213,11 @@ else
         public string? PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "First name is required.")]
+        [StringLength(100, ErrorMessage = "Your firt name must be at least {2} characters long.", MinimumLength = 2)]
         public string? FirstName { get; set; }
 
         [Required(ErrorMessage = "Last name is required.")]
+        [StringLength(100, ErrorMessage = "Your last name must be at least {2} characters long.", MinimumLength = 2)]
         public string? LastName { get; set; }
 
         public string? Biography { get; set; }
