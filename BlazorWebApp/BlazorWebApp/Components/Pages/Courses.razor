@@ -1,5 +1,6 @@
 ﻿@page "/courses"
 @attribute [StreamRendering]
+@rendermode InteractiveServer
 @* @attribute [Authorize] *@                @* <------   öppna upp kommentar sen!   *@
 @inject HttpClient http
 @inject NavigationManager Navigation
@@ -46,13 +47,13 @@
                     <div class="course-card">
                         <div class="content" @onclick="() => NavToCourseDetails(course.Id!)">
                             <div class="image">
-                                <img src="~/images/@course.CourseImage" alt="" />
+                                <img src="/images/@course.CourseImage" alt="" />
 
                                 @if (course.IsBestSeller)
                                 {
                                     <span class="best-seller">Best Seller</span>
                                 }
-                                <a href="#" data-course-id="@course.Id" class="bookmark" onclick="saveCourse(event, @course.Id)"> <i class="fa-sharp fa-regular fa-bookmark" title="Join Course"></i></a>
+                               @*  <a href="#" data-course-id="@course.Id" class="bookmark" onclick="saveCourse(event, @course.Id)"> <i class="fa-sharp fa-regular fa-bookmark" title="Join Course"></i></a> *@
                             </div>
                             <div class="course-info">
                                 <h5 class="title">@course.Title</h5>
@@ -86,26 +87,11 @@
                     </div>
                 }
             </div>
-
-           @*  if (Pagination != null && Pagination.TotalPages > 1)
-            {
-                <div class="pagination">
-                    @for (int i = 1; i <= Pagination.TotalPages; i++)
-                    {
-                        if (i == Pagination.CurrentPage)
-                        {
-                            <span class="number active">@i</span>
-                        }
-                        else
-                        {
-                            <a class="number" @onclick="() => NavToPage(i)">@i</a>
-                        }
-                    }
-                </div>
-            } *@
         }        
     </div>
+    <BlazorWebApp.Components.Partials.Courses.SkillsPartial />
 </section>
+
 
 
 
@@ -116,7 +102,7 @@
     protected override async Task OnInitializedAsync()
     {
         var query = new GraphQLQuery { Query = "{getAllCourses {id title isBestSeller category {categoryName} courseImage authorName discountPrice price viewHours likesInPercent likesInNumbers}}" };
-        var respons = await Http.PostAsJsonAsync("http://localhost:7209/api/graphql", query);
+        var respons = await Http.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=Ms8IxsC9w8G_dT8KJZbuf11TR3o7reeP9ld8DSPtnesZAzFuaTdsNw%3D%3D", query);
 
         if (respons.IsSuccessStatusCode)
         {
