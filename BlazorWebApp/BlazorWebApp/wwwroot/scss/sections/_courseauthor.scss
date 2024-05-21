@@ -4,7 +4,7 @@
             display: flex;
         }
 
-        background-color: var (--color-gray-900);
+        background-color: var(--color-gray-900);
 
         .squiggly {
             display: none;
@@ -52,7 +52,7 @@
                 row-gap: 40px;
 
                 .learn-from {
-                    color: var (--color-white);
+                    color: var(--color-white);
                     opacity: 0.6;
                     font-size: 20px;
                     text-align: center;
@@ -63,7 +63,7 @@
                 }
 
                 .author-name {
-                    color: var (--color-white);
+                    color: var(--color-white);
                     font-size: 40px;
                     font-weight: 800;
                     text-align: center;
@@ -74,7 +74,7 @@
                 }
 
                 .author-description {
-                    color: var (--color-white);
+                    color: var(--color-white);
                     opacity: 0.6;
                 }
             }

@@ -1,0 +1,90 @@
+
+
+
+
+#account-security {
+    background: var(--color-gray-000);
+    text-align: center;
+
+    @include xl {
+        text-align: start;
+    }
+
+    .change-password {
+
+
+        form {
+            padding: 1rem;
+
+            h5 {
+                color: var(--color-theme);
+            }
+
+            .content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+
+                @include xl {
+                    display: grid;
+                    gap: 1rem 2rem;
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-areas: "current-password ." "new-password confirm-password" "buttons buttons";
+                }
+
+
+
+                #form-current-password {
+                    grid-area: current-password;
+                }
+
+                #form-new-password {
+                    grid-area: new-password;
+                }
+
+                #form-confirm-password {
+                    grid-area: confirm-password;
+                }
+
+                #form-bio {
+                    grid-area: bio;
+
+                    span {
+                        color: var(--color-gray-500);
+                        font-weight: 400;
+                    }
+                }
+
+                .form-buttons {
+                    grid-area: buttons;
+                    margin: 20px 0;
+                    display: flex;
+                    gap: 20px;
+                }
+            }
+        }
+    }
+
+    .delete-account {
+
+        .delete-header {
+            h2 {
+                @include h3;
+                color: var(--color-theme);
+            }
+        }
+
+        form {
+
+            .btn-youtube {
+                margin-top: 20px;
+
+                @include xl {
+                    display: inline-block;
+                    width: 160px;
+                }
+            }
+        }
+    }
+}

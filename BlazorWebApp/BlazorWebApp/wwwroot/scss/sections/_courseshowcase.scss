@@ -18,7 +18,7 @@
             margin-bottom: 10px;
             position: absolute;
             top: 0;
-            color: var (--color-white);
+            color: var(--color-white);
             padding-top: 15px;
 
             @include md {
@@ -48,12 +48,12 @@
                     border-radius: 5px;
 
                     span {
-                        color: var (--color-white);
+                        color: var(--color-white);
                     }
                 }
 
                 .tag-2 {
-                    background-color: var (--color-gray-200);
+                    background-color: var(--color-gray-200);
                     padding-right: 10px;
                     padding-left: 10px;
                     border-radius: 5px;
@@ -82,14 +82,14 @@
 
                     @include lg {
                         margin-top: 40px;
-                        color: var (--color-white);
+                        color: var(--color-white);
                     }
                 }
 
                 span {
 
                     @include lg {
-                        color: var (--color-white);
+                        color: var(--color-white);
                         opacity: 0.7;
                     }
                 }
@@ -141,7 +141,7 @@
                         @include xxxl {
                             border-right: 1px solid;
                             padding-right: 15px;
-                            color: var (--color-white);
+                            color: var(--color-white);
                             opacity: 0.5;
 
 
@@ -177,7 +177,7 @@
                     span {
 
                         @include xxxl {
-                            color: var (--color-white);
+                            color: var(--color-white);
                         }
                     }
                 }
