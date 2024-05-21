@@ -1,76 +1,160 @@
 ﻿@page "/account/security"
 @using System.ComponentModel.DataAnnotations
+@using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
+@attribute [StreamRendering]
 
-<section id="account-security">
-    <div class="change-password">
-        <EditForm FormName="ChangePassword" OnValidSubmit="ChangePasswordAsync">
-            <h2>Account Details</h2>
-            <h5>Password</h5>
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager NavigationManager
 
-            <div class="content">
-                <div id="form-current-password" class="input-group">
-                    <label for="Current Password">Current Password</label>
-                    <InputText type="password" id="CurrentPassword" @bind-Value="@PasswordForm.CurrentPassword" placeholder="Your current password" />
-                    <div class="validation-message">
-                        <ValidationMessage For="@(() => PasswordForm.CurrentPassword)" />
+<PageTitle>Security</PageTitle>
+
+@if(user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <section id="account-security">
+        <div class="change-password">
+            <EditForm Model="@PasswordForm" FormName="ChangePassword" OnValidSubmit="ChangePasswordAsync" novalidate>
+                <h2>Account Details</h2>
+                <h5>Password</h5>
+                <DataAnnotationsValidator />
+                <div class="status-message">
+                    @statusMessage
+                </div>
+
+                <div class="content">
+                    <div id="form-current-password" class="input-group">
+                        <label for="CurrentPassword">Current Password</label>
+                        <InputText type="password" id="CurrentPassword" @bind-Value="PasswordForm.CurrentPassword" placeholder="Your current password" />
+                        <div class="validation-message">
+                            <ValidationMessage For="@(() => PasswordForm.CurrentPassword)" />
+                        </div>
+                    </div>
+
+                    <div id="form-new-password" class="input-group">
+                        <label for="NewPassword">New Password</label>
+                        <InputText type="password" id="NewPassword" @bind-Value="PasswordForm.NewPassword" placeholder="Your new password" />
+                        <div class="validation-message">
+                            <ValidationMessage For="@(() => PasswordForm.NewPassword)" />
+                        </div>
+                    </div>
+
+                    <div id="form-confirm-password" class="input-group">
+                        <label for="ConfirmNewPassword">Confirm New Password</label>
+                        <InputText type="password" id="ConfirmNewPassword" @bind-Value="PasswordForm.ConfirmNewPassword" placeholder="Confirm your new password" />
+                        <div class="validation-message">
+                            <ValidationMessage For="@(() => PasswordForm.ConfirmNewPassword)" />
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button class="btn-gray" type="reset">Cancel</button>
+                        <button class="btn-theme" type="submit">Change password</button>
                     </div>
                 </div>
-
-                <div id="form-new-password" class="input-group">
-                    <label for="New Password">New Password</label>
-                    <InputText type="password" id="NewPassword" @bind-Value="@PasswordForm.NewPassword" placeholder="Your new password" />
-                    <div class="validation-message">
-                        <ValidationMessage For="@(() => PasswordForm.NewPassword)" />
-                    </div>
-                </div>
-
-                <div id="form-confirm-password" class="input-group">
-                    <label for="Confirm New Password">Confirm New Password</label>
-                    <InputText type="password" id="ConfirmNewPassword" @bind-Value="@PasswordForm.ConfirmNewPassword" placeholder="Confirm your new password" />
-                    <div class="validation-message">
-                        <ValidationMessage For="@(() => PasswordForm.ConfirmNewPassword)" />
-                    </div>
-                </div>
-
-                <div class="form-buttons">
-                    <button class="btn-gray" type="reset">Cancel</button>
-                    <button class="btn-theme" type="submit">Change password</button>
-                </div>
+            </EditForm>
+        </div>
+        <hr />
+        <div class="delete-account">
+            <div class="delete-header">
+                <h2>Delete Account</h2>
+                <p>When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
             </div>
-        </EditForm>
-    </div>
-    <hr />
-    <div class="delete-account">
-
-    </div>
-</section>
+            <EditForm Model="@DeleteAccountForm" FormName="DeleteAccount" OnValidSubmit="DeleteAccountAsync" novalidate>
+                <DataAnnotationsValidator />
+                <div class="checkbox">
+                    <label for="DeleteAccount">Yes, I want to delete my account</label>
+                    <InputCheckbox id="DeleteAccount" @bind-Value="DeleteAccountForm.DeleteAccountBool" />
+                </div>
+                <div class="validation-message">
+                    <ValidationMessage For="@(() => DeleteAccountForm.DeleteAccountBool)" />
+                </div>
+                <button class="btn-youtube" type="submit">Delete Account</button>
+            </EditForm>
+        </div>
+    </section>
+}
 
 @code {
+    private ApplicationUser user = default!;
+    private string? statusMessage;
+
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    [SupplyParameterFromForm]
+    [SupplyParameterFromForm(FormName = "ChangePassword")]
     private PasswordModel PasswordForm { get; set; } = new();
+
+    [SupplyParameterFromForm(FormName = "DeleteAccount")]
+    private DeleteAccountModel DeleteAccountForm { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+    }
+
 
     private async Task ChangePasswordAsync()
     {
-
+        var changePasswordResult = await UserManager.ChangePasswordAsync(user, PasswordForm.CurrentPassword, PasswordForm.NewPassword);
+        if (changePasswordResult.Succeeded)
+        {
+            statusMessage = "Password changed successfully";
+            PasswordForm.CurrentPassword = string.Empty;
+            PasswordForm.NewPassword = string.Empty;
+            PasswordForm.ConfirmNewPassword = string.Empty;
+        }
+        else
+        {
+            statusMessage = "something went wrong, please try again later";
+        }
+        StateHasChanged();
     }
 
-    public class PasswordModel
+    private async Task DeleteAccountAsync()
     {
-        [Required]
+        var deleteAccountResult = await UserManager.DeleteAsync(user);
+        if (deleteAccountResult.Succeeded)
+        {
+            statusMessage = "Account deleted successfully";
+            NavigationManager.NavigateTo("/account/signout");
+        }
+        else
+        {
+            foreach (var error in deleteAccountResult.Errors)
+            {
+                statusMessage = "something went wrong, please try again later";
+            }
+        }
+    }
+
+    private sealed class PasswordModel
+    {
+        [Required(ErrorMessage = "Wrong Password")]
         [DataType(DataType.Password)]
-        public string CurrentPassword { get; set; } = string.Empty;
+        public string CurrentPassword { get; set; } = "";
 
         [Required(ErrorMessage = "Invalid password")]
         [DataType(DataType.Password)]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,50}$", ErrorMessage = "Password needs one uppercase letter, one number and special character")]
-        public string NewPassword { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = "";
 
-        [Required(ErrorMessage = "Password does not match")]
+        [Required(ErrorMessage = "Passwords do not match")]
         [DataType(DataType.Password)]
-        [Compare("NewPassword")]
-        public string ConfirmNewPassword { get; set; } = string.Empty;
+        [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match")]
+        public string ConfirmNewPassword { get; set; } = "";
+    }
+
+    private sealed class DeleteAccountModel
+    {
+        [Required(ErrorMessage = "You must agree to the terms & conditions")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must agree to the terms & conditions")]
+        public bool DeleteAccountBool { get; set; } = false;
     }
 }
