@@ -1,0 +1,17 @@
+#admin-portal-index {
+    background: var(--color-gray-000);
+    padding-top: 2rem;
+
+    h1 {
+        background-color: var(--color-gray-100);
+        padding: 2rem;
+        text-align: center;
+        border-radius: 50%;
+    }
+
+    p {
+        padding-top: 3rem;
+        color: var(--color-gray-800);
+        text-align: center;
+    }
+}
