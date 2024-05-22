@@ -1,6 +1,7 @@
 #course-showcase {
     position: relative;
-    margin-bottom: 60px;
+    margin-bottom: 10px;
+    padding-bottom:70px;
     z-index: 1;
 
     .header-image {
@@ -162,7 +163,7 @@
                 @include xxxl {
                     justify-content: flex-start;
                     margin-left: 0px;
-                    margin-top: 120px;
+                    margin-top: 80px;
                 }
 
                 .created-by {

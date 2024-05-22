@@ -1923,7 +1923,7 @@ header #mobile-menu .account-shortcut img {
 
 section {
   background-color: var(--color-gray-001);
-  padding-bottom: 120px;
+  padding-bottom: 20px;
 }
 section .courses {
   padding-top: 60px;
@@ -2152,7 +2152,8 @@ section .courses .pagination .active {
 section #skills .container {
   background-color: var(--color-gray-200);
   display: grid;
-  margin-bottom: 60px;
+  margin-bottom: 10;
+  margin-top: 4rem;
   padding: 10px;
 }
 @media (min-width: 992px) {
@@ -2263,7 +2264,8 @@ section #skills .container .image img {
 
 #course-showcase {
   position: relative;
-  margin-bottom: 60px;
+  margin-bottom: 10px;
+  padding-bottom: 70px;
   z-index: 1;
 }
 #course-showcase .header-image {
@@ -2406,7 +2408,7 @@ section #skills .container .image img {
   #course-showcase .container .header-container .author {
     justify-content: flex-start;
     margin-left: 0px;
-    margin-top: 120px;
+    margin-top: 80px;
   }
 }
 #course-showcase .container .header-container .author .created-by {
