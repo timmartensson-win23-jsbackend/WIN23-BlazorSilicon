@@ -1,6 +1,7 @@
 using BlazorWebApp;
 using BlazorWebApp.Components;
 using BlazorWebApp.Data;
+using BlazorWebApp.Hubs;
 using BlazorWebApp.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -51,6 +52,8 @@ builder.Services.ConfigureApplicationCookie(x =>
     x.SlidingExpiration = true;   
 });
 
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -77,6 +80,6 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(BlazorWebApp.Client._Imports).Assembly);
 
-
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
