@@ -66,7 +66,7 @@
     private async Task Send()
     {
         var newMessage = new ChatMessage { UserName = userName, Message = currentMessage, Created = DateTime.Now };
-        messages.Add(newMessage);
+        // messages.Add(newMessage);
 
         await hubConnection!.SendAsync("SendMessageToAll", newMessage.UserName, newMessage.Message, newMessage.Created);
 
