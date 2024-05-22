@@ -68,7 +68,7 @@
         var newMessage = new ChatMessage { UserName = userName, Message = currentMessage, Created = DateTime.Now };
         // messages.Add(newMessage);
 
-        await hubConnection!.SendAsync("SendMessageToAll", newMessage.UserName, newMessage.Message, newMessage.Created);
+        await hubConnection!.SendAsync("SendMessageToAll", newMessage.UserName, null ,newMessage.Message, newMessage.Created);
 
         currentMessage = string.Empty;
     }
@@ -87,9 +87,9 @@
             userName = "Anonymous";
         }
 
-        hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/chatHub")).Build();
+        hubConnection = new HubConnectionBuilder().WithUrl(NavigationManager.ToAbsoluteUri("/chathub")).Build();
 
-        hubConnection.On<string, string?, string, DateTime>("ReceiveMessage", (fromUser, ToUser, message, dateTime) =>
+        hubConnection.On<string, string?, string, DateTime>("ReceiveMessage", (fromUser, toUser, message, dateTime) =>
         {
             var newMessage = new ChatMessage { UserName = fromUser, Message = message, Created = dateTime };
             messages.Add(newMessage);
