@@ -1,0 +1,163 @@
+﻿@page "/admin/users"
+@using BlazorWebApp.Data
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+
+@inject ApplicationDbContext DbContext
+
+@if (users is null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    @if (isConfirmationVisible || userToUpdate != null)
+    {
+        <div class="page-overlay" @onclick="HideForms"></div>
+    }
+    <section id="user-index" @onclick="HideForms">
+        <div class="user-list-group">
+            <div class="user-header"></div>
+            @foreach (var user in users)
+            {
+                <div class="user-list-item">
+                    <div class="credentials">
+                        <div class="email">@user.Email</div>
+                        <div class="full-name">@user.UserProfile!.FirstName @user.UserProfile!.LastName</div>
+                    </div>
+                    <div class="addresses">
+                        <div class="city">@user.UserAddress!.City</div>
+                        <div class="adressline-1">@user.UserAddress!.AddressLine_1</div>
+                        @if (user.UserAddress.AddressLine_2 is not null)
+                        {
+                            <div class="adressline-2">@user.UserAddress.AddressLine_2</div>
+                        }
+                    </div>
+                    <div class="links">
+                        <button class="btn-theme" @onclick="(() => ShowUpdateForm(user))" @onclick:stopPropagation="true">Read/Update</button>
+                        <button class="btn-youtube" @onclick="(() => ShowConfirmation(user))" @onclick:stopPropagation="true">Delete</button>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (isConfirmationVisible)
+        {
+            <div class="confirm-delete" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h2>Confirm Delete</h2>
+                    <p>Are you sure you want to delete this user?</p>
+                    <div class="buttons">
+                        <button class="btn-youtube" @onclick="DeleteConfirmed">Yes</button>
+                        <button class="btn-gray" @onclick="(() => isConfirmationVisible = false)">No</button>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (userToUpdate != null)
+        {
+            <div class="update-form" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h2>Update User</h2>
+                    <EditForm Model="userToUpdate" OnValidSubmit="UpdateUser">
+                        <div id="form-email" class="input-group">
+                            <label for="Email">Email</label>
+                            <InputText id="Email" @bind-Value="userToUpdate.Email" />
+                        </div>
+
+                        <div id="form-firstname" class="input-group">
+                            <label for="FirstName">First name</label>
+                            <InputText id="FirstName" @bind-Value="userToUpdate.UserProfile!.FirstName" />
+                        </div>
+
+                        <div id="form-lastname" class="input-group">
+                            <label for="LastName">Last name</label>
+                            <InputText id="LastName" @bind-Value="userToUpdate.UserProfile!.LastName" />
+                        </div>
+
+                        <hr />
+
+                        <div id="form-city" class="input-group">
+                            <label for="City">City</label>
+                            <InputText id="City" @bind-Value="userToUpdate.UserAddress!.City" />
+                        </div>
+
+                        <div id="form-addressline-1" class="input-group">
+                            <label for="Addressline-1">Addressline 1</label>
+                            <InputText id="Addressline-1" @bind-Value="userToUpdate.UserAddress!.AddressLine_1" />
+                        </div>
+
+                        <div id="form-addressline-2" class="input-group">
+                            <label for="Addressline-2">Addressline 2</label>
+                            <InputText id="Addressline-2" @bind-Value="userToUpdate.UserAddress!.AddressLine_2" />
+                        </div>
+
+                        <div id="form-postalcode" class="input-group">
+                            <label for="PostalCode">Postal Code</label>
+                            <InputText id="PostalCode" @bind-Value="userToUpdate.UserAddress!.PostalCode" />
+                        </div>
+
+
+                        <button class="btn-theme" type="submit">Update</button>
+                    </EditForm>
+                    <button class="btn-gray" @onclick="(() => userToUpdate = null)">Close</button>
+                </div>
+            </div>
+        }
+    </section>
+}
+
+@code {
+    private List<ApplicationUser> users = new();
+    private bool isConfirmationVisible = false;
+    private ApplicationUser? userToDelete;
+    private ApplicationUser? userToUpdate;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await DbContext.Users
+            .Include(u => u.UserProfile)
+            .Include(u => u.UserAddress)
+            .ToListAsync();
+    }
+
+    private void ShowConfirmation(ApplicationUser user)
+    {
+        userToDelete = user;
+        isConfirmationVisible = true;
+    }
+
+    private async Task DeleteConfirmed()
+    {
+
+        if (userToDelete != null)
+        {
+            DbContext.Users.Remove(userToDelete);
+            await DbContext.SaveChangesAsync();
+            users.Remove(userToDelete);
+            await InvokeAsync(StateHasChanged);
+            isConfirmationVisible = false;
+        }
+    }
+
+    private void ShowUpdateForm(ApplicationUser user)
+    {
+        userToUpdate = user;
+    }
+
+    private async Task UpdateUser()
+    {
+        if (userToUpdate != null)
+        {
+            DbContext.Users.Update(userToUpdate);
+            await DbContext.SaveChangesAsync();
+            userToUpdate = null;
+        }
+    }
+
+    private void HideForms()
+    {
+        isConfirmationVisible = false;
+        userToUpdate = null;
+    }
+}
