@@ -330,6 +330,7 @@ a:hover {
   background: var(--color-danger);
   color: var(--color-white);
   border: none;
+  transition: all 0.3s ease-in-out;
 }
 .btn-youtube:hover {
   text-decoration: none;
@@ -792,11 +793,13 @@ form span.field-validation-error::after {
 
 .chat-bubble-right {
   text-align: right;
-  background-color: #d1ffd6;
+  background-color: #B1B2F8;
   margin-left: auto;
   border-radius: 15px;
   padding: 10px;
   max-width: 75%;
+  margin-right: 15px;
+  margin-top: 15px;
 }
 
 .chat-bubble-left {
@@ -806,6 +809,8 @@ form span.field-validation-error::after {
   border-radius: 15px;
   padding: 10px;
   max-width: 75%;
+  margin-left: 15px;
+  margin-top: 10px;
 }
 
 .contact-header {
@@ -2934,6 +2939,65 @@ header #mobile-menu .account-shortcut img {
   padding-top: 3rem;
   color: var(--color-gray-800);
   text-align: center;
+}
+
+#account-chat {
+  margin-top: 100px;
+}
+#account-chat .chat-window {
+  display: flex;
+  flex-direction: column;
+  border: transparent;
+  border-radius: 15px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+#account-chat .chat-window .chat-header {
+  background-color: #6366F1;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  line-height: 160%;
+  font-weight: 400;
+  color: var(--color-gray-700);
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  font-size: 20px !important;
+  color: #FFFFFF;
+}
+#account-chat .chat-window .chat-body {
+  height: 400px;
+  overflow: auto;
+}
+#account-chat .chat-window .chat-body .list-group-item strong {
+  margin-right: 10px;
+}
+#account-chat .chat-window .chat-footer {
+  background-color: #6366F1;
+}
+#account-chat .chat-window .chat-footer .chat-textarea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+#account-chat .chat-window .chat-footer .chat-textarea .form-control {
+  height: 100px;
+  width: 95%;
+  resize: none;
+}
+#account-chat .chat-window .chat-footer .chat-button {
+  margin-top: 15px;
+  margin-right: 20px;
+  margin-bottom: 15px;
+}
+#account-chat .chat-window .chat-footer .chat-button button {
+  margin-left: auto;
+}
+
+#admin-courses {
+  padding-top: 2rem;
 }
 
 h1:focus {

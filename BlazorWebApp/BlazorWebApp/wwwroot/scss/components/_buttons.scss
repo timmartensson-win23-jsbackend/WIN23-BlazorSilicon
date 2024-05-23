@@ -42,7 +42,7 @@
     background: var(--color-danger);
     color: var(--color-white);
     border: none;
-
+    transition: all 0.3s ease-in-out;
 
     &:hover {
         text-decoration: none;

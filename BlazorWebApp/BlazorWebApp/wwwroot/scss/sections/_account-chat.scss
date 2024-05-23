@@ -1,0 +1,59 @@
+#account-chat {
+    margin-top: 100px;
+
+    .chat-window {
+        display: flex;
+        flex-direction: column;
+        border: transparent;
+        border-radius: 15px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+
+        .chat-header {
+            background-color: #6366F1;
+            text-align: center;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            @include h5;
+            color: #FFFFFF;
+        }
+
+        .chat-body {
+            height: 400px;
+            overflow: auto;
+
+            .list-group-item {
+                strong {
+                    margin-right: 10px;
+                }
+            }
+        }
+
+        .chat-footer {
+            background-color: #6366F1;
+
+            .chat-textarea {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 30px;
+
+                .form-control {
+                    height: 100px;
+                    width: 95%;
+                    resize: none;
+                }
+            }
+
+            .chat-button {
+                margin-top: 15px;
+                margin-right: 20px;
+                margin-bottom: 15px;
+
+                button {
+                    margin-left: auto; // Add this line
+                }
+            }
+        }
+    }
+}
