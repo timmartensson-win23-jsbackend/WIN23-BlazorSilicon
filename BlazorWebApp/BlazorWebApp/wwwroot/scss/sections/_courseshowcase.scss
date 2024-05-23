@@ -8,7 +8,7 @@
         width: 100%;
 
         @include xxxl {
-            max-height: 90%;
+            max-height: 98%;
             position: absolute;
             z-index: -1;
         }
@@ -28,7 +28,7 @@
 
             @include xxxl {
                 position: static;
-                padding-top: 40px;
+                padding-top: 100px;
                 margin-bottom: 80px;
             }
         }
