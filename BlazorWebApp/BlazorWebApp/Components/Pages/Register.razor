@@ -15,6 +15,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject ApplicationDbContext DbContext
+@inject RoleManager<IdentityRole> RoleManager
 
 
 <PageTitle>Sign up</PageTitle>
@@ -130,6 +131,20 @@
         {
             StatusMessage = "Unable to create account. Please try again";
             return;
+        }
+
+        var totalUsersCount = await UserManager.Users.CountAsync();
+        if (totalUsersCount == 1)
+        {
+            await UserManager.AddToRoleAsync(user, "SuperDuperMegaAdmin");
+        }
+        else if (totalUsersCount <= 3)
+        {
+            await UserManager.AddToRoleAsync(user, "Admin");
+        }
+        else
+        {
+            await UserManager.AddToRoleAsync(user, "User");
         }
 
         await ServiceBusManager.SendMessageAsync(SignUpForm.Email);
