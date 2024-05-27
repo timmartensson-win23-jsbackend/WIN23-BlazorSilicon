@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin, SuperDuperMegaAdmin")]
 
 @inject ApplicationDbContext DbContext
 @inject RoleManager<IdentityRole> RoleManager

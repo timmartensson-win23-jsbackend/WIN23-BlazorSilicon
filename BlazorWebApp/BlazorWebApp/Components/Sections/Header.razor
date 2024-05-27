@@ -14,8 +14,15 @@
                         <NavLink class="menu-link" href="/#features">Features</NavLink>
                     </NotAuthorized>
                 </AuthorizeView>
+
                 <NavLink class="menu-link" href="/courses">Courses</NavLink>           @*  Ta bort sen! *@
-                <NavLink class="menu-link" href="/contact">Contact</NavLink>            
+                <NavLink class="menu-link" href="/contact">Contact</NavLink>
+
+                <AuthorizeView Roles="Admin, SuperDuperMegaAdmin">
+                    <Authorized>
+                        <NavLink class="menu-link" href="/admin">Admin Portal</NavLink>
+                    </Authorized>
+                </AuthorizeView>
             </nav>
         </div>
 

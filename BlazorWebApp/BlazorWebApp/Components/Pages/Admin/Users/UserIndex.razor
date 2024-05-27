@@ -2,6 +2,7 @@
 @using BlazorWebApp.Data
 @using Microsoft.EntityFrameworkCore
 @rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin, SuperDuperMegaAdmin")]
 
 @inject ApplicationDbContext DbContext
 
