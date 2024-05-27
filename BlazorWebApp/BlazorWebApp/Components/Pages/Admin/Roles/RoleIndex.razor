@@ -1,0 +1,317 @@
+﻿@page "/admin/roles"
+@using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@rendermode InteractiveServer
+@attribute [Authorize(Roles = "Admin, SuperDuperMegaAdmin")]
+
+@inject ApplicationDbContext DbContext
+@inject RoleManager<IdentityRole> RoleManager
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+@if (superAdmins is null || admins is null)
+{
+    <p>Loading ...</p>
+}
+else
+{
+    @if (isConfirmationVisible || userToUpdate != null || userToChangeRole != null)
+    {
+        <div class="page-overlay" @onclick="HideForms"></div>
+    }
+    <section id="role-index">
+        @if (superAdmins != null && superAdmins.Any())
+        {
+            <div class="Super-admin-list-group">
+                <div class="header">Super Admins</div>
+                @foreach (var superAdmin in superAdmins)
+                {
+                    <div class="role-list-item">
+                        <div class="credentials">
+                            <div class="email">@superAdmin.Email</div>
+                            <div class="full-name">@superAdmin.UserProfile!.FirstName @superAdmin.UserProfile!.LastName</div>
+                        </div>
+                        <div class="links">
+                            @if (superAdmin != currentUser)
+                            {
+                                <button class="btn-theme" @onclick="() => ShowChangeRoleForm(superAdmin)">Change role</button>
+                            }
+                            <button class="btn-theme" @onclick="() => ShowUpdateForm(superAdmin)">Read/Update</button>
+                            @if (superAdmin != currentUser)
+                            {
+                                <button class="btn-youtube" @onclick="() => ShowConfirmation(superAdmin)">Delete</button>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr />
+
+        }
+        @if (admins != null && admins.Any())
+        {
+            <div class="admin-list-group">
+                <div class="header">Admins</div>
+                @foreach (var admin in admins)
+                {
+                    <div class="role-list-item">
+                        <div class="credentials">
+                            <div class="email">@admin.Email</div>
+                            <div class="full-name">@admin.UserProfile!.FirstName @admin.UserProfile!.LastName</div>
+                        </div>
+                        <div class="links">
+                            @if (currentUserRole == "SuperDuperMegaAdmin")
+                            {
+                                <button class="btn-theme" @onclick="() => ShowChangeRoleForm(admin)">Change role</button>
+                            }
+                            <button class="btn-theme" @onclick="() => ShowUpdateForm(admin)">Read/Update</button>
+                            @if (currentUserRole == "SuperDuperMegaAdmin")
+                            {
+                                <button class="btn-youtube" @onclick="() => ShowConfirmation(admin)">Delete</button>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr />
+        }
+        @if (users != null && users.Any())
+        {
+            <div class="user-list-group">
+                <div class="header">Users</div>
+                @foreach (var user in users)
+                {
+                    <div class="role-list-item">
+                        <div class="credentials">
+                            <div class="email">@user.Email</div>
+                            <div class="full-name">@user.UserProfile!.FirstName @user.UserProfile!.LastName</div>
+                        </div>
+                        <div class="links">
+                            <button class="btn-theme" @onclick="() => ShowChangeRoleForm(user)">Change role</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (userToChangeRole != null)
+        {
+            <div class="change-role-form" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h2>Change Role</h2>
+                    <EditForm Model="userToChangeRole" OnValidSubmit="ChangeRole">
+                        <div id="form-role" class="input-group">
+                            <label for="Role">Role</label>
+                            <InputSelect id="Role" @bind-Value="selectedRole">
+                                @foreach (var role in roles)
+                                {
+                                    <option value="@role.Name">@role.Name</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <button class="btn-theme" type="submit">Change</button>
+                    </EditForm>
+                    <button class="btn-gray" @onclick="(() => userToChangeRole = null)">Close</button>
+                </div>
+            </div>
+        }
+
+        @if (isConfirmationVisible)
+        {
+            <div class="confirm-delete" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h2>Confirm Delete</h2>
+                    <p>Are you sure you want to delete this user?</p>
+                    <div class="buttons">
+                        <button class="btn-youtube" @onclick="DeleteConfirmed">Yes</button>
+                        <button class="btn-gray" @onclick="(() => isConfirmationVisible = false)">No</button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (userToUpdate != null)
+        {
+            <div class="update-form" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h2>Update User</h2>
+                    <EditForm Model="userToUpdate" OnValidSubmit="UpdateUser">
+                        <div id="form-email" class="input-group">
+                            <label for="Email">Email</label>
+                            <InputText id="Email" @bind-Value="userToUpdate.Email" />
+                        </div>
+
+                        <div id="form-firstname" class="input-group">
+                            <label for="FirstName">First name</label>
+                            <InputText id="FirstName" @bind-Value="userToUpdate.UserProfile!.FirstName" />
+                        </div>
+
+                        <div id="form-lastname" class="input-group">
+                            <label for="LastName">Last name</label>
+                            <InputText id="LastName" @bind-Value="userToUpdate.UserProfile!.LastName" />
+                        </div>
+
+                        <hr />
+
+                        <div id="form-city" class="input-group">
+                            <label for="City">City</label>
+                            <InputText id="City" @bind-Value="userToUpdate.UserAddress!.City" />
+                        </div>
+
+                        <div id="form-addressline-1" class="input-group">
+                            <label for="Addressline-1">Addressline 1</label>
+                            <InputText id="Addressline-1" @bind-Value="userToUpdate.UserAddress!.AddressLine_1" />
+                        </div>
+
+                        <div id="form-addressline-2" class="input-group">
+                            <label for="Addressline-2">Addressline 2</label>
+                            <InputText id="Addressline-2" @bind-Value="userToUpdate.UserAddress!.AddressLine_2" />
+                        </div>
+
+                        <div id="form-postalcode" class="input-group">
+                            <label for="PostalCode">Postal Code</label>
+                            <InputText id="PostalCode" @bind-Value="userToUpdate.UserAddress!.PostalCode" />
+                        </div>
+
+
+                        <button class="btn-theme" type="submit">Update</button>
+                    </EditForm>
+                    <button class="btn-gray" @onclick="(() => userToUpdate = null)">Close</button>
+                </div>
+            </div>
+        }
+
+    </section>
+}
+
+@code {
+    private List<ApplicationUser> superAdmins = new();
+    private List<ApplicationUser> admins = new();
+    private List<ApplicationUser> users = new();
+    private List<IdentityRole> roles = new();
+
+    private ApplicationUser? userToChangeRole;
+    private string? selectedRole;
+
+    private ApplicationUser? userToUpdate;
+
+    private ApplicationUser? userToDelete;
+
+    private ApplicationUser? currentUser;
+    private string? currentUserRole;
+
+    private bool isConfirmationVisible = false;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = await UserManager.GetUserAsync(SignInManager.Context.User);
+        var currentRole = (await UserManager.GetRolesAsync(currentUser!)).FirstOrDefault();
+        currentUserRole = currentRole;
+
+        var allUsers = await DbContext.Users
+        .Include(u => u.UserProfile)
+        .Include(u => u.UserAddress)
+        .ToListAsync();
+        foreach (var user in allUsers)
+        {
+            if (await UserManager.IsInRoleAsync(user, "SuperDuperMegaAdmin"))
+            {
+                superAdmins.Add(user);
+            }
+            else if (await UserManager.IsInRoleAsync(user, "Admin"))
+            {
+                admins.Add(user);
+            }
+            else
+            {
+                users.Add(user);
+            }
+        }
+        roles = await RoleManager.Roles.ToListAsync();
+    }
+
+    private void ShowConfirmation(ApplicationUser user)
+    {
+        userToDelete = user;
+        isConfirmationVisible = true;
+    }
+
+    private async Task DeleteConfirmed()
+    {
+
+        if (userToDelete != null)
+        {
+            DbContext.Users.Remove(userToDelete);
+            await DbContext.SaveChangesAsync();
+            users.Remove(userToDelete);
+            await InvokeAsync(StateHasChanged);
+            isConfirmationVisible = false;
+        }
+    }
+
+    private async Task ShowChangeRoleForm(ApplicationUser user)
+    {
+        userToChangeRole = user;
+        selectedRole = (await UserManager.GetRolesAsync(user)).FirstOrDefault();
+    }
+
+    private async Task ChangeRole()
+    {
+        if (userToChangeRole != null)
+        {
+            var currentRoles = await UserManager.GetRolesAsync(userToChangeRole);
+            await UserManager.RemoveFromRolesAsync(userToChangeRole, currentRoles);
+            await UserManager.AddToRoleAsync(userToChangeRole, selectedRole!);
+            await UserManager.UpdateAsync(userToChangeRole);
+
+            superAdmins.Remove(userToChangeRole);
+            admins.Remove(userToChangeRole);
+            users.Remove(userToChangeRole);
+
+            if (selectedRole == "SuperDuperMegaAdmin")
+            {
+                superAdmins.Add(userToChangeRole);
+            }
+            else if (selectedRole == "Admin")
+            {
+                admins.Add(userToChangeRole);
+            }
+            else
+            {
+                users.Add(userToChangeRole);
+            }
+
+            userToChangeRole = null;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private void ShowUpdateForm(ApplicationUser user)
+    {
+        userToUpdate = user;
+    }
+
+    private async Task UpdateUser()
+    {
+        if (userToUpdate != null)
+        {
+            DbContext.Users.Update(userToUpdate);
+            await DbContext.SaveChangesAsync();
+            userToUpdate = null;
+        }
+    }
+
+    private void HideForms()
+    {
+        isConfirmationVisible = false;
+        userToChangeRole = null;
+        userToUpdate = null;
+    }
+}
