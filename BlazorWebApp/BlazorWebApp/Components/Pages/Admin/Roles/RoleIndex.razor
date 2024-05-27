@@ -7,6 +7,8 @@
 @inject ApplicationDbContext DbContext
 @inject RoleManager<IdentityRole> RoleManager
 @inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+
 
 @if (superAdmins is null || admins is null)
 {
@@ -14,6 +16,10 @@
 }
 else
 {
+    @if (isConfirmationVisible || userToUpdate != null || userToChangeRole != null)
+    {
+        <div class="page-overlay" @onclick="HideForms"></div>
+    }
     <section id="role-index">
         @if (superAdmins != null && superAdmins.Any())
         {
@@ -27,9 +33,15 @@ else
                             <div class="full-name">@superAdmin.UserProfile!.FirstName @superAdmin.UserProfile!.LastName</div>
                         </div>
                         <div class="links">
-                            <button class="btn-theme" @onclick="() => ShowChangeRoleForm(superAdmin)">Change role</button>
-                            <button class="btn-theme">Read/Update</button>
-                            <button class="btn-youtube">Delete</button>
+                            @if (superAdmin != currentUser)
+                            {
+                                <button class="btn-theme" @onclick="() => ShowChangeRoleForm(superAdmin)">Change role</button>
+                            }
+                            <button class="btn-theme" @onclick="() => ShowUpdateForm(superAdmin)">Read/Update</button>
+                            @if (superAdmin != currentUser)
+                            {
+                                <button class="btn-youtube" @onclick="() => ShowConfirmation(superAdmin)">Delete</button>
+                            }
                         </div>
                     </div>
                 }
@@ -49,9 +61,15 @@ else
                             <div class="full-name">@admin.UserProfile!.FirstName @admin.UserProfile!.LastName</div>
                         </div>
                         <div class="links">
-                            <button class="btn-theme" @onclick="() => ShowChangeRoleForm(admin)">Change role</button>
-                            <button class="btn-theme">Read/Update</button>
-                            <button class="btn-youtube">Delete</button>
+                            @if (currentUserRole == "SuperDuperMegaAdmin")
+                            {
+                                <button class="btn-theme" @onclick="() => ShowChangeRoleForm(admin)">Change role</button>
+                            }
+                            <button class="btn-theme" @onclick="() => ShowUpdateForm(admin)">Read/Update</button>
+                            @if (currentUserRole == "SuperDuperMegaAdmin")
+                            {
+                                <button class="btn-youtube" @onclick="() => ShowConfirmation(admin)">Delete</button>
+                            }
                         </div>
                     </div>
                 }
@@ -180,12 +198,22 @@ else
 
     private ApplicationUser? userToDelete;
 
+    private ApplicationUser? currentUser;
+    private string? currentUserRole;
+
     private bool isConfirmationVisible = false;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
 
 
 
     protected override async Task OnInitializedAsync()
     {
+        currentUser = await UserManager.GetUserAsync(SignInManager.Context.User);
+        var currentRole = (await UserManager.GetRolesAsync(currentUser!)).FirstOrDefault();
+        currentUserRole = currentRole;
+
         var allUsers = await DbContext.Users
         .Include(u => u.UserProfile)
         .Include(u => u.UserAddress)
@@ -277,5 +305,12 @@ else
             await DbContext.SaveChangesAsync();
             userToUpdate = null;
         }
+    }
+
+    private void HideForms()
+    {
+        isConfirmationVisible = false;
+        userToChangeRole = null;
+        userToUpdate = null;
     }
 }

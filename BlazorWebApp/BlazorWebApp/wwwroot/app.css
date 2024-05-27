@@ -3099,6 +3099,10 @@ header #mobile-menu .account-shortcut img {
   font-size: 28px !important;
   text-align: center;
 }
+#role-index .admin-list-group {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
 #role-index .admin-list-group .header {
   line-height: 160%;
   font-weight: 400;
@@ -3163,6 +3167,30 @@ header #mobile-menu .account-shortcut img {
 #role-index .confirm-delete .buttons {
   display: flex;
   gap: 20px;
+}
+#role-index .change-role-form {
+  position: fixed;
+  width: 400px;
+  top: 20%;
+  left: 50%;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#role-index .change-role-form .content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+#role-index .change-role-form .content form {
+  gap: 10px;
+}
+#role-index .change-role-form .content form button {
+  margin-top: 10px;
 }
 #role-index .update-form {
   position: fixed;

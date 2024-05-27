@@ -9,11 +9,13 @@
         .header {
             @include h3;
             text-align: center;
-
         }
     }
 
     .admin-list-group {
+        margin-top: 20px;
+        margin-bottom: 40px;
+
         .header {
             @include h3;
             text-align: center;
@@ -81,6 +83,34 @@
         .buttons {
             display: flex;
             gap: 20px;
+        }
+    }
+
+    .change-role-form {
+        position: fixed;
+        width: 400px;
+        top: 20%;
+        left: 50%;
+        border-radius: 12px;
+        background: var(--color-white);
+        padding: 40px;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        z-index: 2;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+
+            form {
+                gap: 10px;
+
+                button {
+                    margin-top: 10px;
+                }
+            }
         }
     }
 
