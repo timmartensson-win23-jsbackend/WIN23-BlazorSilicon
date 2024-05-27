@@ -29,9 +29,9 @@ public class CreateCourseModel
     public string? Articles { get; set; }
     public string? Resources { get; set; }
     public string? AccessTime { get; set; }
-    public List<string>? ProgramDetailsTitle { get; set; }
-    public List<string>? ProgramDetailsText { get; set; }
-    public List<string>? LearnPoints { get; set; }
+    public List<string>? ProgramDetailsTitle { get; set; } = new List<string>();
+    public List<string>? ProgramDetailsText { get; set; } = new List<string>();
+    public List<string>? LearnPoints { get; set; } = new List<string>();
 
     public string? Category { get; set; }
 }

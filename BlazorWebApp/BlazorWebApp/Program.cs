@@ -20,6 +20,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<ServiceBusManager>();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
+builder.Services.AddScoped<GraphQLService>();
 
 builder.Services.AddAuthentication(options =>
     {

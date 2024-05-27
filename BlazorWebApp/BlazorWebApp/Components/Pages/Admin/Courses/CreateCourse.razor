@@ -1,12 +1,16 @@
 ﻿@page "/admin/createcourse"
 @using BlazorWebApp.Models.AdminPortal.Courses
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject GraphQLService graphQLService
+
 
 <PageTitle>AdminPortal - Create Course</PageTitle>
 
 <section id="createcourse">
 
     <h2>Create A New Course</h2>
-    <EditForm Model="Model" method="post" OnInvalidSubmit="HandleSubmit" FormName="createcourse" novalidate>
+    <EditForm Model="Model" method="post" OnValidSubmit="HandleSubmit" FormName="createcourse" novalidate>
         <DataAnnotationsValidator/>
 
         <div class="course-info">
@@ -109,15 +113,46 @@
             </div>
             <div>
                 <label for="ProgramDetailsTitle">Program Details Title</label>
-                @* <InputText @bind-Value="Model.ProgramDetailsTitle" /> *@
+                <InputText id="ProgramDetailsTitle" @bind-Value="newProgramDetailsTitle" />
+                <button type="button" @onclick="AddProgramDetailsTitle">Add</button>
+                <ul>
+                    @if(Model.ProgramDetailsTitle != null)
+                    {
+                        @foreach (var title in Model.ProgramDetailsTitle)
+                        {
+                            <li>@title</li>
+                        }
+                    }
+                   
+                </ul>
             </div>
             <div>
                 <label for="ProgramDetailsText">Program Details Text</label>
-                @* <InputText @bind-Value="Model.ProgramDetailsText" /> *@
+                <InputText id="ProgramDetailsText" @bind-Value="newProgramDetailsText" />
+                <button type="button" @onclick="AddProgramDetailsText">Add</button>
+                <ul>
+                    @if (Model.ProgramDetailsText != null)
+                    {
+                        @foreach (var text in Model.ProgramDetailsText)
+                        {
+                            <li>@text</li>
+                        }
+                    }
+                </ul>
             </div>
             <div>
                 <label for="LearnPoints">Learn Points</label>
-                @* <InputText @bind-Value="Model.LearnPoints" /> *@
+                <InputText id="LearnPoints" @bind-Value="newLearnPoint" />
+                <button type="button" @onclick="AddLearnPoint">Add</button>
+                <ul>
+                    @if (Model.LearnPoints != null)
+                    {
+                        @foreach (var point in Model.LearnPoints)
+                        {
+                            <li>@point</li>
+                        }
+                    }
+                </ul>
             </div>
             <div>
                 <label for="Category">Category</label>
@@ -126,6 +161,11 @@
         </div>
 
         <button class="btn-theme" type="submit">Create A New Course</button>
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <span id="success" class="alert alert-dark">@StatusMessage</span>
+        }
+        
 
     </EditForm>
 
@@ -133,11 +173,73 @@
 
 @code {
     [SupplyParameterFromForm]
-    public CreateCourseModel Model { get; set; } = new();
+    public CreateCourseModel Model { get; set; } = new CreateCourseModel();
+    private string? newProgramDetailsTitle;
+    private string? newProgramDetailsText;
+    private string? newLearnPoint;
+    private string? StatusMessage { get; set; }
+
+    private void AddProgramDetailsTitle()
+    {
+        if (!string.IsNullOrWhiteSpace(newProgramDetailsTitle))
+        {
+            if(Model.ProgramDetailsTitle == null)
+            {
+                Model.ProgramDetailsTitle = new List<string>();
+            }
+            Model.ProgramDetailsTitle.Add(newProgramDetailsTitle);
+            newProgramDetailsTitle = string.Empty;
+        }
+    }
+
+    private void AddProgramDetailsText()
+    {
+        if (!string.IsNullOrWhiteSpace(newProgramDetailsText))
+        {
+            if (Model.ProgramDetailsText == null)
+            {
+                Model.ProgramDetailsText = new List<string>();
+            }
+            Model.ProgramDetailsText.Add(newProgramDetailsText);
+            newProgramDetailsText = string.Empty;
+        }
+    }
+
+    private void AddLearnPoint()
+    {
+        if (!string.IsNullOrWhiteSpace(newLearnPoint))
+        {
+            if (Model.LearnPoints == null)
+            {
+                Model.LearnPoints = new List<string>();
+            }
+            Model.LearnPoints.Add(newLearnPoint);
+            newLearnPoint = string.Empty;
+        }
+    }
 
     private async Task HandleSubmit()
     {
-        
+        try
+        {
+            var result = await graphQLService.AddCourseAsync(Model);
+
+            if (result.Success)
+            {
+                StatusMessage = result.Message;
+            }
+            else
+            {
+                StatusMessage = "Something went wrong: " + result.Message;
+            }
+        }
+        catch
+        {
+            StatusMessage = "Bad request";
+        }
+
     }
+
+    
 
 }
