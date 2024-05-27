@@ -34,14 +34,17 @@ else
                             <div class="full-name">@superAdmin.UserProfile!.FirstName @superAdmin.UserProfile!.LastName</div>
                         </div>
                         <div class="links">
-                            @if (superAdmin != currentUser)
+                            @if (currentUserRole == "SuperDuperMegaAdmin")
                             {
-                                <button class="btn-theme" @onclick="() => ShowChangeRoleForm(superAdmin)">Change role</button>
-                            }
-                            <button class="btn-theme" @onclick="() => ShowUpdateForm(superAdmin)">Read/Update</button>
-                            @if (superAdmin != currentUser)
-                            {
-                                <button class="btn-youtube" @onclick="() => ShowConfirmation(superAdmin)">Delete</button>
+                                @if (superAdmin != currentUser)
+                                {
+                                    <button class="btn-theme" @onclick="() => ShowChangeRoleForm(superAdmin)">Change role</button>
+                                }
+                                <button class="btn-theme" @onclick="() => ShowUpdateForm(superAdmin)">Read/Update</button>
+                                @if (superAdmin != currentUser)
+                                {
+                                    <button class="btn-youtube" @onclick="() => ShowConfirmation(superAdmin)">Delete</button>
+                                }
                             }
                         </div>
                     </div>
