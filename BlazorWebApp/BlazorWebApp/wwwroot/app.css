@@ -3070,6 +3070,8 @@ header #mobile-menu .account-shortcut img {
   padding: 40px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   z-index: 2;
+  overflow-y: auto;
+  max-height: 80vh;
 }
 #user-index .update-form .content {
   display: flex;
@@ -3215,6 +3217,8 @@ header #mobile-menu .account-shortcut img {
   padding: 40px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   z-index: 2;
+  overflow-y: auto;
+  max-height: 80vh;
 }
 #role-index .update-form .content {
   display: flex;
