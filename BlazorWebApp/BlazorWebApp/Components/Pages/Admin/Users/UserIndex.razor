@@ -1,10 +1,12 @@
 ﻿@page "/admin/users"
 @using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @rendermode InteractiveServer
 @attribute [Authorize(Roles = "Admin, SuperDuperMegaAdmin")]
 
 @inject ApplicationDbContext DbContext
+@inject UserManager<ApplicationUser> UserManager
 
 @if (users is null)
 {
@@ -116,10 +118,21 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        users = await DbContext.Users
+        var allUsers = await DbContext.Users
             .Include(u => u.UserProfile)
             .Include(u => u.UserAddress)
             .ToListAsync();
+
+        foreach (var user in allUsers)
+        {
+            var roles = await UserManager.GetRolesAsync(user);
+            if (!roles.Contains("Admin") && !roles.Contains("SuperDuperMegaAdmin"))
+            {
+                users.Add(user);
+            };
+
+        }
+
     }
 
     private void ShowConfirmation(ApplicationUser user)

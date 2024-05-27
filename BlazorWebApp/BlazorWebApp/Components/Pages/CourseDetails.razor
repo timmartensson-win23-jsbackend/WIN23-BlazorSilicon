@@ -1,8 +1,17 @@
 ﻿@page "/coursedetails/{courseId}"
+@using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
 @attribute [StreamRendering]
+@rendermode InteractiveServer
+
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject SignInManager<ApplicationUser> SignInManager
 
 
 <PageTitle>About course</PageTitle>
+
 
 
 
@@ -100,7 +109,11 @@ else
                                 <p class="ord-price">$@course.Price</p>
                             }
                         </div>
-                        <a class="btn-theme">Join Course</a>
+                        <a class="@(isSaved ? "btn-youtube" : "btn-theme")" @onclick="ToggleCourse">@(@isSaved ? "Leave Course" : "Join Course")</a>
+                        @if (statusMessage is not null)
+                        {
+                            <p>@statusMessage</p>
+                        }
                     </div>
                 </div>
             </div>
@@ -154,11 +167,20 @@ else
 @code {
     private CoursesModel? course;
 
+    private bool isSaved;
+
+    private ApplicationUser? user;
+
+    private string? statusMessage;
+
     [Parameter]
     public string? courseId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        user = await UserManager.GetUserAsync(SignInManager.Context.User);
+
+
         var query = new GraphQLQuery
             {
                 Query = $"{{ getCourseById(id: \"{courseId}\") {{ id showcaseImage courseImageAltText isBestSeller title courseDescription learnPoints articles resources accessTime discountPrice price programDetailsTitle programDetailsText reviews likesInNumbers viewHours authorImage autherImageAltText authorName autherBio youTubeSubscribers faceBookFollowers}} }}"
@@ -223,7 +245,42 @@ else
             }
 
         }
+
+        isSaved = DbContext.SavedCourses.Any(sc => sc.UserId == user!.Id && sc.CourseId == course!.Id);
     }
+
+    private async Task ToggleCourse()
+    {
+        if (course != null && user != null)
+        {
+            if (isSaved)
+            {
+                var savedCourse = DbContext.SavedCourses.First(sc => sc.UserId == user.Id && sc.CourseId == course.Id);
+                if (savedCourse != null)
+                {
+                    DbContext.SavedCourses.Remove(savedCourse);
+                    await DbContext.SaveChangesAsync();
+                    statusMessage = "Course removed!";
+                    isSaved = false;
+                }
+            }
+            else
+            {
+                var savedCourse = new SavedCourses
+                {
+                    UserId = user.Id,
+                    CourseId = course.Id!
+                };
+                DbContext.SavedCourses.Add(savedCourse);
+                await DbContext.SaveChangesAsync();
+                statusMessage = "Course joined!";
+                isSaved = true;
+            }
+            StateHasChanged();
+        }
+    }
+
+
 
 }
 
