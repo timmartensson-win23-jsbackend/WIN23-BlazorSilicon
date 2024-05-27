@@ -7,5 +7,7 @@ namespace BlazorWebApp.Data
     {
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
+
+        public DbSet<SavedCourses> SavedCourses { get; set; }
     }
 }
