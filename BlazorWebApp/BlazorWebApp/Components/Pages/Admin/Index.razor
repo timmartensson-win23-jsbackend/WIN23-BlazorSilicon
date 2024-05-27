@@ -1,4 +1,5 @@
 ﻿@page "/admin"
+@attribute [Authorize(Roles = "Admin, SuperDuperMegaAdmin")]
 
 <section id="admin-portal-index"> 
     <div>

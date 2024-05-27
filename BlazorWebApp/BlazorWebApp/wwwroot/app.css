@@ -3081,6 +3081,151 @@ header #mobile-menu .account-shortcut img {
   z-index: 1;
 }
 
+#role-index {
+  margin-top: 100px;
+  width: 100%;
+  position: relative;
+}
+#role-index .Super-admin-list-group {
+  margin-bottom: 40px;
+}
+#role-index .Super-admin-list-group .header {
+  line-height: 160%;
+  font-weight: 400;
+  color: var(--color-gray-700);
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  font-size: 28px !important;
+  text-align: center;
+}
+#role-index .admin-list-group {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+#role-index .admin-list-group .header {
+  line-height: 160%;
+  font-weight: 400;
+  color: var(--color-gray-700);
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  font-size: 28px !important;
+  text-align: center;
+}
+#role-index .user-list-group {
+  margin-top: 20px;
+}
+#role-index .user-list-group .header {
+  line-height: 160%;
+  font-weight: 400;
+  color: var(--color-gray-700);
+  font-family: "Manrope", sans-serif;
+  font-weight: 800;
+  color: var(--color-gray-900);
+  font-size: 28px !important;
+  text-align: center;
+}
+#role-index .role-list-item {
+  border: 1px solid var(--color-gray-300);
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+#role-index .role-list-item .credentials .email {
+  text-decoration: underline;
+}
+#role-index .role-list-item .links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  max-height: 40px;
+}
+#role-index .confirm-delete {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#role-index .confirm-delete .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#role-index .confirm-delete .buttons {
+  display: flex;
+  gap: 20px;
+}
+#role-index .change-role-form {
+  position: fixed;
+  width: 400px;
+  top: 20%;
+  left: 50%;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#role-index .change-role-form .content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+#role-index .change-role-form .content form {
+  gap: 10px;
+}
+#role-index .change-role-form .content form button {
+  margin-top: 10px;
+}
+#role-index .update-form {
+  position: fixed;
+  width: 400px;
+  top: 10%;
+  left: 50%;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#role-index .update-form .content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+#role-index .update-form .content form {
+  gap: 10px;
+}
+#role-index .update-form .content form button {
+  margin-top: 10px;
+}
+
+.page-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
 h1:focus {
   outline: none;
 }
