@@ -1,4 +1,4 @@
-﻿@page "/courses"
+﻿@page "/Account/SavedCourses"
 @using BlazorWebApp.Data
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
@@ -11,36 +11,18 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext DbContext
 @inject SignInManager<ApplicationUser> SignInManager
-@inject ServiceBusManager ServiceBusManager
 
-<PageTitle>Courses</PageTitle>
 
-<section id="courses-overview">
-    <div class="courses container">       
+
+<section id="account-saved-courses">
+    <div class="courses container">
         <div class="section-title">
-            <h1 class="h1">Courses</h1>
-            <div class="search-div">
-                <div class="dropdown select">
-                    <select class="selected" @onchange="OnCategoryChange"><i class="fa-sharp fa-light fa-circle-caret-down"></i>
-                        <option value="all" class="select-options">All categories</option>
-                        <div class="option" data-value="all">All Categories</div>
-                        @if (categories != null)
-                        {
-                            foreach (var category in categories)
-                            {
-                                <option class="option" value="@category.CategoryName">@category.CategoryName</option>
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="search">
-                    <input id="searchQuery" type="search" name="searchQuery" placeholder="Search courses" />
-                    <i class="fa-sharp fa-solid fa-magnifying-glass"></i>
-                </div>
-            </div>
+            <h1 class="h1">Saved Courses</h1>
+
+            <button class="btn-red-transparent" @onclick=DeleteAllCourses>Delete all</button>
         </div>
 
-        @if(courses == null)
+        @if (courses == null)
         {
             <p>Loading...</p>
         }
@@ -103,13 +85,9 @@
                     </div>
                 }
             </div>
-        }        
+        }
     </div>
-    <BlazorWebApp.Components.Partials.Courses.SkillsPartial />
 </section>
-
-
-
 
 @code {
     private List<CoursesModel>? courses;
@@ -130,29 +108,39 @@
         if (respons.IsSuccessStatusCode)
         {
             var result = await respons.Content.ReadFromJsonAsync<DynamicGraphQLResponse>();
-            courses = result?.Data.GetProperty("getAllCourses").EnumerateArray().Select(course => new CoursesModel
-            {
-                Id = course.GetProperty("id").GetString(),
-                Title = course.GetProperty("title").GetString()!,
-                IsBestSeller = course.GetProperty("isBestSeller").GetBoolean(),
-                Category = $"{course.GetProperty("category").GetProperty("categoryName").GetString()}",
-                CourseImage = course.GetProperty("courseImage").GetString(),
-                AuthorName = course.GetProperty("authorName").GetString(),
-                DiscountPrice = course.GetProperty("discountPrice").GetString(),
-                Price = course.GetProperty("price").GetString(),
-                ViewHours = course.GetProperty("viewHours").GetString(),
-                LikesInPercent = course.GetProperty("likesInPercent").GetString(),
-                LikesInNumbers = course.GetProperty("likesInNumbers").GetString()
+            var allCourses = result?.Data.GetProperty("getAllCourses").EnumerateArray().Select(course => new CoursesModel
+                {
+                    Id = course.GetProperty("id").GetString(),
+                    Title = course.GetProperty("title").GetString()!,
+                    IsBestSeller = course.GetProperty("isBestSeller").GetBoolean(),
+                    Category = $"{course.GetProperty("category").GetProperty("categoryName").GetString()}",
+                    CourseImage = course.GetProperty("courseImage").GetString(),
+                    AuthorName = course.GetProperty("authorName").GetString(),
+                    DiscountPrice = course.GetProperty("discountPrice").GetString(),
+                    Price = course.GetProperty("price").GetString(),
+                    ViewHours = course.GetProperty("viewHours").GetString(),
+                    LikesInPercent = course.GetProperty("likesInPercent").GetString(),
+                    LikesInNumbers = course.GetProperty("likesInNumbers").GetString()
 
-            })
+                })
             .ToList();
+
+            courses = new List<CoursesModel>();
+
+            foreach (var course in allCourses!)
+            {
+                var isSaved = await DbContext.SavedCourses.AnyAsync(x => x.CourseId == course.Id && x.UserId == user!.Id);
+                if (isSaved)
+                {
+                    courses!.Add(course);
+                    courseSavedStates.Add(course.Id!, true);
+                }
+            }
         }
 
-        foreach (var course in courses!)
-        {
-            var isSaved = await DbContext.SavedCourses.AnyAsync(x => x.CourseId == course.Id && x.UserId == user!.Id);
-            courseSavedStates.Add(course.Id!, isSaved);
-        }
+
+
+
     }
 
     private void NavToCourseDetails(string courseId)
@@ -184,21 +172,33 @@
                     DbContext.SavedCourses.Remove(savedCourse);
                     await DbContext.SaveChangesAsync();
                     courseSavedStates[course.Id!] = false;
+
+                    courses = courses!.Where(c => c.Id != course.Id).ToList();
                 }
             }
             else
             {
-                var savedCourse = new SavedCourses
-                    {
-                        UserId = user.Id,
-                        CourseId = course.Id!
-                    };
+                var savedCourse = new Data.SavedCourses 
+                { 
+                    UserId = user.Id,
+                    CourseId = course.Id! 
+                };
                 DbContext.SavedCourses.Add(savedCourse);
                 await DbContext.SaveChangesAsync();
                 courseSavedStates[course.Id!] = true;
-                await ServiceBusManager.JoinCourseAsync(user.Email!, course.Title, "coursemessage_request");
             }
             StateHasChanged();
         }
+    }
+
+    private async Task DeleteAllCourses()
+    {
+        var savedCourses = await DbContext.SavedCourses.Where(sc => sc.UserId == user!.Id).ToListAsync();
+        DbContext.SavedCourses.RemoveRange(savedCourses);
+        await DbContext.SaveChangesAsync();
+
+        courses = new List<CoursesModel>();
+        courseSavedStates.Clear();
+        StateHasChanged();
     }
 }
