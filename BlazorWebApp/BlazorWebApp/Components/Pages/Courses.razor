@@ -1,10 +1,16 @@
 ﻿@page "/courses"
+@using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
 @attribute [StreamRendering]
 @rendermode InteractiveServer
 @* @attribute [Authorize] *@                @* <------   öppna upp kommentar sen!   *@
 @inject HttpClient http
 @inject NavigationManager Navigation
 
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext DbContext
+@inject SignInManager<ApplicationUser> SignInManager
 
 <PageTitle>Courses</PageTitle>
 
@@ -53,6 +59,17 @@
                                 {
                                     <span class="best-seller">Best Seller</span>
                                 }
+                                <button class="bookmark" @onclick="() => ToggleCourse(course)" @onclick:stopPropagation="true">
+                                    @if (courseSavedStates[course.Id!])
+                                    {
+                                        <i class="fa-solid fa-bookmark"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa-regular fa-bookmark"></i>
+                                    }
+                                </button>
+
                                @*  <a href="#" data-course-id="@course.Id" class="bookmark" onclick="saveCourse(event, @course.Id)"> <i class="fa-sharp fa-regular fa-bookmark" title="Join Course"></i></a> *@
                             </div>
                             <div class="course-info">
@@ -99,8 +116,15 @@
     private List<CoursesModel>? courses;
     private List<CategoryModel>? categories;
 
+    private Dictionary<string, bool> courseSavedStates = new Dictionary<string, bool>();
+
+    private ApplicationUser? user;
+
+
     protected override async Task OnInitializedAsync()
     {
+        user = await UserManager.GetUserAsync(SignInManager.Context.User);
+
         var query = new GraphQLQuery { Query = "{getAllCourses {id title isBestSeller category {categoryName} courseImage authorName discountPrice price viewHours likesInPercent likesInNumbers}}" };
         var respons = await Http.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=Ms8IxsC9w8G_dT8KJZbuf11TR3o7reeP9ld8DSPtnesZAzFuaTdsNw%3D%3D", query);
 
@@ -124,6 +148,12 @@
             })
             .ToList();
         }
+
+        foreach (var course in courses!)
+        {
+            var isSaved = await DbContext.SavedCourses.AnyAsync(x => x.CourseId == course.Id && x.UserId == user!.Id);
+            courseSavedStates.Add(course.Id!, isSaved);
+        }
     }
 
     private void NavToCourseDetails(string courseId)
@@ -141,5 +171,34 @@
     private void NavToPage(int pageNumber)
     {
         // Navigation.NavigateTo($"/courses?pageNumber={pageNumber}&pageSize={Pagination.PageSize}");
+    }
+
+    private async Task ToggleCourse(CoursesModel course)
+    {
+        if (course != null && user != null)
+        {
+            if (courseSavedStates[course.Id!])
+            {
+                var savedCourse = await DbContext.SavedCourses.FirstOrDefaultAsync(sc => sc.UserId == user.Id && sc.CourseId == course.Id);
+                if (savedCourse != null)
+                {
+                    DbContext.SavedCourses.Remove(savedCourse);
+                    await DbContext.SaveChangesAsync();
+                    courseSavedStates[course.Id!] = false;
+                }
+            }
+            else
+            {
+                var savedCourse = new SavedCourses
+                    {
+                        UserId = user.Id,
+                        CourseId = course.Id!
+                    };
+                DbContext.SavedCourses.Add(savedCourse);
+                await DbContext.SaveChangesAsync();
+                courseSavedStates[course.Id!] = true;
+            }
+            StateHasChanged();
+        }
     }
 }
