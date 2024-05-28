@@ -1,0 +1,82 @@
+﻿@page "/account/notifications"
+@using System.ComponentModel.DataAnnotations
+@using BlazorWebApp.Data
+@using Microsoft.AspNetCore.Identity
+@attribute [StreamRendering]
+
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager NavigationManager
+
+<PageTitle>Notifications</PageTitle>
+
+@if(user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <section id="account-notifications">
+        <div>
+            <EditForm Model="@Model" FormName="Notification" OnValidSubmit="SubscribeAsync" novalidate>
+                <DataAnnotationsValidator/>
+                <h2>Notifications</h2>                
+                @if (!string.IsNullOrEmpty(StatusMessage))
+                {
+                    <span id="success" class="alert alert-dark">@StatusMessage</span>
+                }
+                <p>Preferred email for notifications</p>
+                <label for="ExampleMail">example@gmail.com</label>
+                <InputText type="email" @bind-Value="Model.Email"></InputText>
+            </EditForm>
+        </div>
+
+    </section>
+}
+
+
+@code 
+{
+    private ApplicationUser user = default!;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromQuery]
+    public string StatusMessage { get; set; } = "";
+
+    [SupplyParameterFromForm]
+    private NotificationModel Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+    }
+
+
+    private async Task SubscribeAsync()
+    {
+        try
+        {           //ändra endpoint?
+            var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/Subscribe?code=wGaBQjD3VYfaK-AwJLKMG-CFdYJ-5Jbw5OQZs9xEHiiTAzFuV01ovg==", Model);
+            if (result.IsSuccessStatusCode)
+            {
+                StatusMessage = "Thank you for subscribeing!";
+            }
+
+        }
+        catch
+        {
+
+            StatusMessage = "Something went wrong";
+        }
+    }
+
+    private class NotificationModel
+    {
+        [Required(ErrorMessage = "Email is required.")]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email address.")]
+        public string Email { get; set; } = null!;
+    }
+}
