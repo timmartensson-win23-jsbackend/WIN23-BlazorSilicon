@@ -1,16 +1,19 @@
-#courses-overview {
+#account-saved-courses {
     background-color: var(--color-gray-001);
     padding-bottom: 20px;
 
     .courses {
         padding-top: 60px;
         position: relative;
+        display: flex;
+        flex-direction: column;
 
         .section-title {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            margin-bottom: 30px;
+            align-items: center;
+            margin-bottom: 0;
 
             h1 {
                 color: var(--color-gray-900);
@@ -20,76 +23,9 @@
                 flex-direction: row;
             }
 
-            .search-div {
-                display: flex;
-                flex-direction: row;
-                margin-top: 1rem;
-                gap: 30px;
+            button {
+                max-height: 40px;
 
-                .dropdown {
-                    position: relative;
-                    min-width: 300px;
-
-
-                    .selected {
-                        position: relative;
-                        margin-bottom: .3rem;
-                        padding: 0.65rem;
-                        border: .3px solid var(--color-gray-200);
-                        border-radius: .4rem;
-                        color: var(--color-gray-700);
-                        background-color: var(--color-gray-100);
-                        cursor: pointer;
-
-                        .fa-sharp {
-                            position: absolute;
-                            top: 15px;
-                            right: 15px;
-                        }
-                    }
-
-                    .select-options {
-                        display: none;
-                        position: absolute;
-                        top: 100%;
-                        left: 0;
-                        right: 0;
-                        background-color: var(--color-gray-100);
-                        border: 1px solid var(--color-gray-400);
-                        border-radius: 0.2rem;
-                        color: var(--color-gray-700);
-                        z-index: 99;
-
-                        .option {
-                            padding: 10px;
-                            cursor: pointer;
-                        }
-
-                        .option:hover {
-                            background-color: var(--color-gray-400);
-                        }
-                    }
-                }
-
-                .search {
-                    position: relative;
-                    color: var(--color-gray-700);
-
-                    input {
-                        width: 300px;
-                        margin-bottom: .3rem;
-                        padding: 0.6rem;
-                        border: .5px solid var(--color-gray-100);
-                        border-radius: .4rem;
-                        background-color: var(--color-gray-100);
-                    }
-
-                    i {
-                        position: absolute;
-                        top: 15px;
-                        right: 12px;
-                    }
-                }
             }
         }
 
@@ -101,10 +37,9 @@
             @include md {
                 grid-template-columns: repeat(2, 1fr);
             }
-
-            @include lg {
+            /*@include lg {
                 grid-template-columns: repeat(3, 1fr);
-            }
+            }*/
 
             .course-card {
                 background-color: var(--color-gray-100);

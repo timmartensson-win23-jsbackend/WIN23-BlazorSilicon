@@ -23,4 +23,14 @@ public class ServiceBusManager
         var serviceBusMessage = new ServiceBusMessage(jsonString);
         await _sender.SendMessageAsync(serviceBusMessage);
     }
+
+    public async Task JoinCourseAsync(string email, string queueName)
+    {
+        var message = new { Email = email };
+        var jsonString = JsonConvert.SerializeObject(message);
+        var serviceBusMessage = new ServiceBusMessage(jsonString);
+
+        ServiceBusSender sender = _client.CreateSender(queueName);
+        await sender.SendMessageAsync(serviceBusMessage);
+    }
 }
