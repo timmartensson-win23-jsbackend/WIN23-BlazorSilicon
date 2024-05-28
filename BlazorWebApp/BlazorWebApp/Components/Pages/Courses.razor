@@ -11,6 +11,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext DbContext
 @inject SignInManager<ApplicationUser> SignInManager
+@inject ServiceBusManager ServiceBusManager
 
 <PageTitle>Courses</PageTitle>
 
@@ -162,7 +163,7 @@
     private void OnCategoryChange(ChangeEventArgs e)
     {
         var selectedCategory = e.Value?.ToString();
-                                                            // Hantera valet av kategori här, ladda data baserat på den valda kategorin. Hur?
+        // Hantera valet av kategori här, ladda data baserat på den valda kategorin. Hur?
         Console.WriteLine($"Selected category: {selectedCategory}");
     }
 
@@ -195,6 +196,7 @@
                 DbContext.SavedCourses.Add(savedCourse);
                 await DbContext.SaveChangesAsync();
                 courseSavedStates[course.Id!] = true;
+                await ServiceBusManager.JoinCourseAsync(user.Email!, course.Title, "coursemessage_request");
             }
             StateHasChanged();
         }

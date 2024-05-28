@@ -8,7 +8,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject ApplicationDbContext DbContext
 @inject SignInManager<ApplicationUser> SignInManager
-
+@inject ServiceBusManager ServiceBusManager
 
 <PageTitle>About course</PageTitle>
 
@@ -275,6 +275,8 @@ else
                 await DbContext.SaveChangesAsync();
                 statusMessage = "Course joined!";
                 isSaved = true;
+
+                await ServiceBusManager.JoinCourseAsync(user.Email!, course.Title, "coursemessage_request");
             }
             StateHasChanged();
         }
