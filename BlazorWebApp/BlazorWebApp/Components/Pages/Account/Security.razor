@@ -3,6 +3,7 @@
 @using BlazorWebApp.Data
 @using Microsoft.AspNetCore.Identity
 @attribute [StreamRendering]
+@rendermode InteractiveServer
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -71,7 +72,7 @@ else
                     <InputCheckbox id="DeleteAccount" @bind-Value="DeleteAccountForm.DeleteAccountBool" />
                 </div>
                 <div class="validation-message">
-                    <ValidationMessage For="@(() => DeleteAccountForm.DeleteAccountBool)" />
+                    <p>@deleteAccountMessage</p>
                 </div>
                 <button class="btn-youtube" type="submit">Delete Account</button>
             </EditForm>
@@ -80,29 +81,28 @@ else
 }
 
 @code {
-    private ApplicationUser user = default!;
+    private ApplicationUser? user;
     private string? statusMessage;
+    private string? deleteAccountMessage;
 
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm(FormName = "ChangePassword")]
     private PasswordModel PasswordForm { get; set; } = new();
 
     [SupplyParameterFromForm(FormName = "DeleteAccount")]
-    private DeleteAccountModel DeleteAccountForm { get; set; } = new();
+    private DeleteAccountModel DeleteAccountForm { get; set; } = new DeleteAccountModel();
 
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        user = await UserManager.GetUserAsync(SignInManager.Context.User);
     }
 
 
     private async Task ChangePasswordAsync()
     {
-        var changePasswordResult = await UserManager.ChangePasswordAsync(user, PasswordForm.CurrentPassword, PasswordForm.NewPassword);
+        var changePasswordResult = await UserManager.ChangePasswordAsync(user!, PasswordForm.CurrentPassword, PasswordForm.NewPassword);
         if (changePasswordResult.Succeeded)
         {
             statusMessage = "Password changed successfully";
@@ -119,7 +119,14 @@ else
 
     private async Task DeleteAccountAsync()
     {
-        var deleteAccountResult = await UserManager.DeleteAsync(user);
+        if (!DeleteAccountForm.DeleteAccountBool)
+        {
+            deleteAccountMessage = "Please check the box to confirm that you want to delete your account.";
+            StateHasChanged();
+            return;
+        }
+
+        var deleteAccountResult = await UserManager.DeleteAsync(user!);
         if (deleteAccountResult.Succeeded)
         {
             statusMessage = "Account deleted successfully";
@@ -154,7 +161,8 @@ else
     private sealed class DeleteAccountModel
     {
         [Required(ErrorMessage = "You must agree to the terms & conditions")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "You must agree to the terms & conditions")]
         public bool DeleteAccountBool { get; set; } = false;
     }
+
+
 }
