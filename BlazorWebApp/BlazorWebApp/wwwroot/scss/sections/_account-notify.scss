@@ -1,0 +1,54 @@
+#account-notifications {
+    .notify {
+        margin-top: 20px;
+        width: 100%;
+
+        form {
+            padding: 1rem;
+
+            h2 {
+
+                @include xl {
+                    padding-bottom: 2rem;
+                }
+            }
+
+            .input-group {
+                margin-bottom: 2rem;
+                max-width: 100%;
+
+                @include lg {
+                    max-width: 70%;
+                }
+                @include xl {
+                    margin-bottom: 2rem;
+                    max-width: 50%;
+                }
+            }
+
+            .switches {
+
+
+                p {
+                    margin-left: 3.5rem;
+                    padding-bottom: 1rem;
+                }
+            }
+
+            .form-buttons {
+                margin-top: 5rem;
+                display:flex;
+                flex-direction:column;
+                justify-content:center;
+                gap:1rem;
+
+                @include lg {
+                    display: flex;
+                    flex-direction:row;
+                    justify-content:start;
+                    gap: 2rem;
+                }
+            }
+        }
+    }
+}

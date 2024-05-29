@@ -2,11 +2,15 @@
 @using System.ComponentModel.DataAnnotations
 @using BlazorWebApp.Data
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@using Newtonsoft.Json
 @attribute [StreamRendering]
+@rendermode InteractiveServer
 
 @inject UserManager<ApplicationUser> UserManager
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager NavigationManager
+@inject ApplicationDbContext DbContext
 
 <PageTitle>Notifications</PageTitle>
 
@@ -17,17 +21,45 @@
 else
 {
     <section id="account-notifications">
-        <div>
+        <div class="notify">
             <EditForm Model="@Model" FormName="Notification" OnValidSubmit="SubscribeAsync" novalidate>
-                <DataAnnotationsValidator/>
-                <h2>Notifications</h2>                
+                <DataAnnotationsValidator />
+                <h2>Notifications</h2>
                 @if (!string.IsNullOrEmpty(StatusMessage))
                 {
                     <span id="success" class="alert alert-dark">@StatusMessage</span>
                 }
-                <p>Preferred email for notifications</p>
-                <label for="ExampleMail">example@gmail.com</label>
-                <InputText type="email" @bind-Value="Model.Email"></InputText>
+                <div class="input-group">
+                    <label for="ExampleMail">Preferred email for notifications</label>
+                    <InputText type="email" @bind-Value="Model.Email" placeholder="example@gmail.com"></InputText>
+                    <ValidationMessage For="@(() => Model.Email)" />
+                </div>
+
+                <div class="switches">
+                    <div class="btn-switch">
+                        <label class="switch" for="switch-notify">
+                            <input type="checkbox" id="switch-notify" checked="" />
+                            <span class="slider round"></span>
+                        </label>
+                        <label>Subscribe to Newsletter</label>
+                    </div>
+                    <p>Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</p>
+
+                    <div class="btn-switch">
+                        <label class="switch" for="switch-mode">
+                            <input type="checkbox" id="switch-mode" checked="@false" />
+                            <span class="slider round"></span>
+                        </label>
+                        <label>Use Dark Mode Theme in Application</label>
+                    </div>
+                    <p>Tortor massa porttitor enim tristique neque fermentum sed.</p>
+                </div>
+
+                <div class="form-buttons">
+                    <button class="btn-gray" type="reset">Cancel</button>
+                    <button class="btn-theme" type="submit">Save changes</button>
+                </div>
+
             </EditForm>
         </div>
 
@@ -37,46 +69,119 @@ else
 
 @code 
 {
-    private ApplicationUser user = default!;
+    private ApplicationUser? user;
+    private List<String> emails = new List<string>();
+    private string? userNotifyEmail;
+    private Timer? timer;
 
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromQuery]
     public string StatusMessage { get; set; } = "";
 
     [SupplyParameterFromForm]
-    private NotificationModel Model { get; set; }
+    private SubscribeModel Model { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        user = await UserManager.GetUserAsync(SignInManager.Context.User);
+        var response = await Http.GetAsync("https://siliconnewsletterprovider.azurewebsites.net/api/GetAllEmails?code=loGoKog8Yd4_23Y3Cs9e6NGwgpIdKSJt-iP4evfCKvIDAzFuoU6zcw%3D%3D");
+        response.EnsureSuccessStatusCode();
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+        emails = JsonConvert.DeserializeObject<List<string>>(responseBody)!;
+
+        foreach (var email in emails)
+        {
+            var result = await DbContext.UserNotifyEmails.FirstOrDefaultAsync(x => x.NotifyEmail == email && x.UserId == user!.Id);
+            if(result is not null)
+            {
+                userNotifyEmail = result.NotifyEmail;
+                Model.OldEmail = userNotifyEmail;
+                Model.Email = userNotifyEmail;
+            }
+        }
+        StateHasChanged();
     }
 
 
     private async Task SubscribeAsync()
     {
         try
-        {           //ändra endpoint?
+        {          
             var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/Subscribe?code=wGaBQjD3VYfaK-AwJLKMG-CFdYJ-5Jbw5OQZs9xEHiiTAzFuV01ovg==", Model);
             if (result.IsSuccessStatusCode)
-            {
-                StatusMessage = "Thank you for subscribeing!";
+            {     
+                if (user is not null && Model is not null)
+                {
+                    var existing = await DbContext.UserNotifyEmails.FirstOrDefaultAsync(x => x.UserId == user.Id);
+
+                    if (existing is not null)
+                    {
+                        if (existing.NotifyEmail != Model.Email)
+                        {
+                            existing.NotifyEmail = Model.Email!;
+                            DbContext.UserNotifyEmails.Update(existing);
+                            await DbContext.SaveChangesAsync();
+                            StatusMessage = "Email was updated!";
+                        }
+                    }
+
+                    else
+                    {
+                        var notifyEmail = new UserNotifyEmail
+                            {
+                                UserId = user.Id,
+                                NotifyEmail = Model.Email!
+                            };
+                        DbContext.UserNotifyEmails.Add(notifyEmail);
+                        await DbContext.SaveChangesAsync();
+                        StatusMessage = "Thank you for subscribeing!";
+                    }
+
+                    StartTimer();
+                }                
+
             }
 
         }
-        catch
+        catch (Exception ex)
         {
 
-            StatusMessage = "Something went wrong";
+            StatusMessage = "Something went wrong" +ex.Message;
+            StartTimer();
         }
+        StateHasChanged();
     }
 
-    private class NotificationModel
+    private void StartTimer()
+    {
+        timer = new Timer(ClearStatusMessage, null, 5000, Timeout.Infinite);
+    }
+
+    private void ClearStatusMessage(object? state)
+    {
+        StatusMessage = string.Empty;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+
+    private class SubscribeModel
     {
         [Required(ErrorMessage = "Email is required.")]
         [DataType(DataType.EmailAddress)]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email address.")]
-        public string Email { get; set; } = null!;
+        public string? Email { get; set; }
+        public string? OldEmail { get; set; }
+        public bool DailyNewsLetter { get; set; } = true;
+        public bool AdvertisingUpdates { get; set; } = true;
+        public bool WeekInReviews { get; set; } = true;
+        public bool EventUpdates { get; set; } = true;
+        public bool StartupsWeekly { get; set; } = true;
+        public bool Podcasts { get; set; } = true;
+
     }
 }
