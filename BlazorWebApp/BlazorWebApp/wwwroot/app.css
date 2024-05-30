@@ -28,7 +28,7 @@
   --color-course-box: #FFFFFF;
 }
 
-:root.dark {
+.dark-mode {
   --color-gray-000: #0B0F19;
   --color-gray-100: #33354D;
   --color-gray-200: #565973;
@@ -1927,7 +1927,7 @@ header #mobile-menu .account-shortcut img {
 }
 
 #courses-overview {
-  background-color: var(--color-gray-001);
+  background-color: var(--color-gray-100);
   padding-bottom: 20px;
 }
 #courses-overview .courses {
