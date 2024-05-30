@@ -31,14 +31,14 @@ else
                 }
                 <div class="input-group">
                     <label for="ExampleMail">Preferred email for notifications</label>
-                    <InputText type="email" @bind-Value="Model.Email" placeholder="example@gmail.com"></InputText>
+                    <InputText type="email" @bind-Value="Model.Email" placeholder="example@gmail.com" disabled="@(!IsSwitchNotifyOn)"></InputText>
                     <ValidationMessage For="@(() => Model.Email)" />
                 </div>
 
                 <div class="switches">
                     <div class="btn-switch">
                         <label class="switch" for="switch-notify">
-                            <input type="checkbox" id="switch-notify" checked="" />
+                            <input type="checkbox" id="switch-notify" @bind="IsSwitchNotifyOn" />
                             <span class="slider round"></span>
                         </label>
                         <label>Subscribe to Newsletter</label>
@@ -73,6 +73,7 @@ else
     private List<String> emails = new List<string>();
     private string? userNotifyEmail;
     private Timer? timer;
+    private bool IsSwitchNotifyOn { get; set; } = true;
 
 
     [SupplyParameterFromQuery]
