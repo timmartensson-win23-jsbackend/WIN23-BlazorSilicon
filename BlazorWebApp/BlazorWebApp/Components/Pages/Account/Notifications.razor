@@ -107,21 +107,28 @@ else
     private async Task SubscribeAsync()
     {
         try
-        {          
+        {
+            if (userNotifyEmail is not null)
+            {
+                Model.OldEmail = userNotifyEmail;
+            }
             var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/Subscribe?code=wGaBQjD3VYfaK-AwJLKMG-CFdYJ-5Jbw5OQZs9xEHiiTAzFuV01ovg==", Model);
             if (result.IsSuccessStatusCode)
-            {     
+            {
                 if (user is not null && Model is not null)
                 {
                     var existing = await DbContext.UserNotifyEmails.FirstOrDefaultAsync(x => x.UserId == user.Id);
 
                     if (existing is not null)
                     {
+                        Model.OldEmail = existing.NotifyEmail;
+
                         if (existing.NotifyEmail != Model.Email)
                         {
                             existing.NotifyEmail = Model.Email!;
                             DbContext.UserNotifyEmails.Update(existing);
                             await DbContext.SaveChangesAsync();
+                            userNotifyEmail = Model.Email;
                             StatusMessage = "Email was updated!";
                         }
                     }
@@ -135,11 +142,12 @@ else
                             };
                         DbContext.UserNotifyEmails.Add(notifyEmail);
                         await DbContext.SaveChangesAsync();
+                        userNotifyEmail = Model.Email;
                         StatusMessage = "Thank you for subscribeing!";
                     }
 
                     StartTimer();
-                }                
+                }
 
             }
 
@@ -147,7 +155,7 @@ else
         catch (Exception ex)
         {
 
-            StatusMessage = "Something went wrong" +ex.Message;
+            StatusMessage = "Something went wrong" + ex.Message;
             StartTimer();
         }
         StateHasChanged();

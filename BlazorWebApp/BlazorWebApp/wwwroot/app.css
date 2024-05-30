@@ -3475,10 +3475,35 @@ header #mobile-menu .account-shortcut img {
 }
 #account-notifications .notify form {
   padding: 1rem;
+  position: relative;
+}
+#account-notifications .notify form h2 {
+  padding-bottom: 3rem;
 }
 @media (min-width: 1200px) {
   #account-notifications .notify form h2 {
-    padding-bottom: 2rem;
+    padding-bottom: 5rem;
+  }
+}
+#account-notifications .notify form .alert {
+  display: none;
+  position: absolute;
+  top: 4rem;
+  left: 1rem;
+  width: 60%;
+}
+#account-notifications .notify form .alert:not(:empty) {
+  display: block;
+}
+@media (min-width: 768px) {
+  #account-notifications .notify form .alert {
+    width: 30%;
+  }
+}
+@media (min-width: 1200px) {
+  #account-notifications .notify form .alert {
+    top: 6rem;
+    width: 40%;
   }
 }
 #account-notifications .notify form .input-group {
