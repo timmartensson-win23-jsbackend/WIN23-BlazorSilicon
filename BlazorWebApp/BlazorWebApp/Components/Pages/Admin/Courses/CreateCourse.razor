@@ -1,116 +1,245 @@
 ﻿@page "/admin/createcourse"
+@using BlazorWebApp.Models.AdminPortal.Courses
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject GraphQLService graphQLService
 
-<section class="create">
+
+<PageTitle>AdminPortal - Create Course</PageTitle>
+
+<section id="createcourse">
 
     <h2>Create A New Course</h2>
-    <EditForm asp-action="Create" asp-controller="Courses" method="post">
+    <EditForm Model="Model" method="post" OnValidSubmit="HandleSubmit" FormName="createcourse" novalidate>
+        <DataAnnotationsValidator/>
 
         <div class="course-info">
-            <h3>General Info</h3>
+            <h3>General Information about the course</h3>
             <div>
-                <label asp-for="Title"></label>
-                <input asp-for="Title" />
+                <label for="Title">Course Title</label>
+                <InputText @bind-Value="Model.Title" />
             </div>
             <div>
-                <label asp-for="Price"></label>
-                <input asp-for="Price" />
+                <label for="Price">Price</label>
+                <InputText @bind-Value="Model.Price" />
             </div>
             <div>
-                <label asp-for="DiscountPrice"></label>
-                <input asp-for="DiscountPrice" />
+                <label for="DiscountPrice">Discount Price</label>
+                <InputText @bind-Value="Model.DiscountPrice" />
             </div>
             <div>
-                <label asp-for="CourseImage"></label>
-                <input asp-for="CourseImage" />
+                <label for="CourseImage">Image url</label>
+                <InputText @bind-Value="Model.CourseImage" />
             </div>
             <div>
-                <label asp-for="Rating"></label>
-                <input asp-for="Rating" />
+                <label for="CourseImageAltText">Alt text for course image</label>
+                <InputText @bind-Value="Model.CourseImageAltText" />
             </div>
             <div>
-                <label asp-for="Reviews"></label>
-                <input asp-for="Reviews" />
+                <label for="Rating">Rating</label>
+                <InputText @bind-Value="Model.Rating" />
             </div>
             <div>
-                <label asp-for="Views"></label>
-                <input asp-for="Views" />
+                <label for="Reviews">Reviews</label>
+                <InputText @bind-Value="Model.Reviews" />
             </div>
             <div>
-                <label asp-for="LikesInPercent"></label>
-                <input asp-for="LikesInPercent" />
+                <label for="Views">Views</label>
+                <InputText @bind-Value="Model.Views" />
             </div>
             <div>
-                <label asp-for="LikesInNumbers"></label>
-                <input asp-for="LikesInNumbers" />
+                <label for="LikesInPercent">Likes in percent</label>
+                <InputText @bind-Value="Model.LikesInPercent" />
+            </div>
+            <div>
+                <label for="LikesInNumbers">Likes in numbers</label>
+                <InputText @bind-Value="Model.LikesInNumbers" />
             </div>
         </div>
 
         <div class="author-info">
-            <h3>Author Info</h3>
+            <h3>Author Information</h3>
             <div>
-                <label asp-for="AuthorName"></label>
-                <input asp-for="AuthorName" />
+                <label for="AuthorName">Author name</label>
+                <InputText @bind-Value="Model.AuthorName" />
             </div>
             <div>
-                <label asp-for="AutherBio"></label>
-                <input asp-for="AutherBio" />
+                <label for="AutherBio">Author biography</label>
+                <InputText @bind-Value="Model.AutherBio" />
             </div>
             <div>
-                <label asp-for="AuthorImage"></label>
-                <input asp-for="AuthorImage" />
+                <label for="AuthorImage">Image of author</label>
+                <InputText @bind-Value="Model.AuthorImage" />
             </div>
             <div>
-                <label asp-for="YouTubeSubscribers"></label>
-                <input asp-for="YouTubeSubscribers" />
+                <label for="AuthorImageAltText">Alt text for author image</label>
+                <InputText @bind-Value="Model.AutherImageAltText" />
             </div>
             <div>
-                <label asp-for="FaceBookFollowers"></label>
-                <input asp-for="FaceBookFollowers" />
+                <label for="YouTubeSubscribers">YouTube Subscribers</label>
+                <InputText @bind-Value="Model.YouTubeSubscribers" />
+            </div>
+            <div>
+                <label for="FaceBookFollowers">FaceBook Followers</label>
+                <InputText @bind-Value="Model.FaceBookFollowers" />
             </div>
         </div>
 
         <div class="course-details">
-            <h3>Course Details</h3>
+            <h3>Details about the Course</h3>
             <div>
-                <label asp-for="CourseDescription"></label>
-                <input asp-for="CourseDescription" />
+                <label for="ShowcaseImage">Image url for showcase</label>
+                <InputText @bind-Value="Model.ShowcaseImage" />
             </div>
             <div>
-                <label asp-for="ViewHours"></label>
-                <input asp-for="ViewHours" />
+                <label for="CourseDescription">Description</label>
+                <InputText @bind-Value="Model.CourseDescription" />
             </div>
             <div>
-                <label asp-for="Resources"></label>
-                <input asp-for="Resources" />
+                <label for="ViewHours">View Hours</label>
+                <InputText @bind-Value="Model.ViewHours" />
             </div>
             <div>
-                <label asp-for="AccessTime"></label>
-                <input asp-for="AccessTime" />
+                <label for="Articles">Articles</label>
+                <InputText @bind-Value="Model.Articles" />
             </div>
             <div>
-                <label asp-for="ProgramDetailsTitle"></label>
-                <input asp-for="ProgramDetailsTitle" />
+                <label for="Resources">Resourses</label>
+                <InputText @bind-Value="Model.Resources" />
             </div>
             <div>
-                <label asp-for="ProgramDetailsText"></label>
-                <input asp-for="ProgramDetailsText" />
+                <label for="AccessTime">Access Time</label>
+                <InputText @bind-Value="Model.AccessTime" />
             </div>
             <div>
-                <label asp-for="LearnPoints"></label>
-                <input asp-for="LearnPoints" />
+                <label for="ProgramDetailsTitle">Program Details Title</label>
+                <InputText id="ProgramDetailsTitle" @bind-Value="newProgramDetailsTitle" />
+                <button type="button" @onclick="AddProgramDetailsTitle">Add</button>
+                <ul>
+                    @if(Model.ProgramDetailsTitle != null)
+                    {
+                        @foreach (var title in Model.ProgramDetailsTitle)
+                        {
+                            <li>@title</li>
+                        }
+                    }
+                   
+                </ul>
             </div>
             <div>
-                <label asp-for="Category"></label>
-                <input asp-for="Category" />
+                <label for="ProgramDetailsText">Program Details Text</label>
+                <InputText id="ProgramDetailsText" @bind-Value="newProgramDetailsText" />
+                <button type="button" @onclick="AddProgramDetailsText">Add</button>
+                <ul>
+                    @if (Model.ProgramDetailsText != null)
+                    {
+                        @foreach (var text in Model.ProgramDetailsText)
+                        {
+                            <li>@text</li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div>
+                <label for="LearnPoints">Learn Points</label>
+                <InputText id="LearnPoints" @bind-Value="newLearnPoint" />
+                <button type="button" @onclick="AddLearnPoint">Add</button>
+                <ul>
+                    @if (Model.LearnPoints != null)
+                    {
+                        @foreach (var point in Model.LearnPoints)
+                        {
+                            <li>@point</li>
+                        }
+                    }
+                </ul>
+            </div>
+            <div>
+                <label for="Category">Category</label>
+                <InputText @bind-Value="Model.Category" />
             </div>
         </div>
 
         <button class="btn-theme" type="submit">Create A New Course</button>
+        @if (!string.IsNullOrEmpty(StatusMessage))
+        {
+            <span id="success" class="alert alert-dark">@StatusMessage</span>
+        }
+        
 
     </EditForm>
 
 </section>
 
 @code {
+    [SupplyParameterFromForm]
+    public CreateCourseModel Model { get; set; } = new CreateCourseModel();
+    private string? newProgramDetailsTitle;
+    private string? newProgramDetailsText;
+    private string? newLearnPoint;
+    private string? StatusMessage { get; set; }
+
+    private void AddProgramDetailsTitle()
+    {
+        if (!string.IsNullOrWhiteSpace(newProgramDetailsTitle))
+        {
+            if(Model.ProgramDetailsTitle == null)
+            {
+                Model.ProgramDetailsTitle = new List<string>();
+            }
+            Model.ProgramDetailsTitle.Add(newProgramDetailsTitle);
+            newProgramDetailsTitle = string.Empty;
+        }
+    }
+
+    private void AddProgramDetailsText()
+    {
+        if (!string.IsNullOrWhiteSpace(newProgramDetailsText))
+        {
+            if (Model.ProgramDetailsText == null)
+            {
+                Model.ProgramDetailsText = new List<string>();
+            }
+            Model.ProgramDetailsText.Add(newProgramDetailsText);
+            newProgramDetailsText = string.Empty;
+        }
+    }
+
+    private void AddLearnPoint()
+    {
+        if (!string.IsNullOrWhiteSpace(newLearnPoint))
+        {
+            if (Model.LearnPoints == null)
+            {
+                Model.LearnPoints = new List<string>();
+            }
+            Model.LearnPoints.Add(newLearnPoint);
+            newLearnPoint = string.Empty;
+        }
+    }
+
+    private async Task HandleSubmit()
+    {
+        try
+        {
+            var result = await graphQLService.AddCourseAsync(Model);
+
+            if (result.Success)
+            {
+                StatusMessage = result.Message;
+            }
+            else
+            {
+                StatusMessage = "Something went wrong: " + result.Message;
+            }
+        }
+        catch
+        {
+            StatusMessage = "Bad request";
+        }
+
+    }
+
+    
 
 }

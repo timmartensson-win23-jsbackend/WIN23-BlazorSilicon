@@ -1,0 +1,84 @@
+#account-notifications {
+    .notify {
+        margin-top: 20px;
+        width: 100%;
+
+        form {
+            padding: 1rem;
+
+            h2 {
+                padding-bottom: 3rem;
+
+                @include xl {
+                    padding-bottom: 5rem;
+                }
+            }
+
+            position: relative;
+
+            .alert {
+                display: none;
+                position: absolute;
+                top: 4rem;
+                left: 1rem;
+                width: 60%;
+            }
+
+            .alert:not(:empty) {
+                display: block;
+            }
+
+            @include md {
+                .alert {
+                    width: 30%;
+                }
+            }          
+
+            @include xl {
+                .alert {
+                    top: 6rem;
+                    width: 40%;
+                }
+            }
+
+
+            .input-group {
+                margin-bottom: 2rem;
+                max-width: 100%;
+
+                @include lg {
+                    max-width: 70%;
+                }
+
+                @include xl {
+                    margin-bottom: 2rem;
+                    max-width: 50%;
+                }
+            }
+
+            .switches {
+
+
+                p {
+                    margin-left: 3.5rem;
+                    padding-bottom: 1rem;
+                }
+            }
+
+            .form-buttons {
+                margin-top: 5rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                gap: 1rem;
+
+                @include lg {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: start;
+                    gap: 2rem;
+                }
+            }
+        }
+    }
+}
