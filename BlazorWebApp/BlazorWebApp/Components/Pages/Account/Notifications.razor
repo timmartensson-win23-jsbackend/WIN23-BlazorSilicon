@@ -38,12 +38,12 @@ else
                 <div class="switches">
                     <div class="btn-switch">
                         <label class="switch" for="switch-notify">
-                            <input type="checkbox" id="switch-notify" @bind="IsSwitchNotifyOn" />
+                            <input type="checkbox" id="switch-notify" checked="@IsSwitchNotifyOn" @onchange="SwitchNotifyChanged"/>
                             <span class="slider round"></span>
                         </label>
                         <label>Subscribe to Newsletter</label>
                     </div>
-                    <p>Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</p>
+                    <p>If you would like to unsubscribe from the newsletter, just turn off the switch.</p>
 
                     <div class="btn-switch">
                         <label class="switch" for="switch-mode">
@@ -162,6 +162,50 @@ else
         StateHasChanged();
     }
 
+    private async Task UnsubscribeAsync()
+    {
+        try
+        {
+            if (user is not null && userNotifyEmail is not null)
+            {
+                var existing = await DbContext.UserNotifyEmails.FirstOrDefaultAsync(x => x.UserId == user.Id);
+                if (existing is not null)
+                {
+                    DbContext.UserNotifyEmails.Remove(existing);
+                    await DbContext.SaveChangesAsync();
+                }
+
+                var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/UnSubscribe?code=9LLmQJhDHTbt2Z0O1QXzVK6Gr94yx8LB-pLUzn-l67dUAzFugBvmjA%3D%3D", new { Email = userNotifyEmail });
+                if (result.IsSuccessStatusCode)
+                {
+                    StatusMessage = "You have been unsubscribed.";
+                }
+                else
+                {
+                    StatusMessage = "Unsubscribe failed.";
+                }
+
+                StartTimer();
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "Something went wrong: " + ex.Message;
+            StartTimer();
+        }
+        StateHasChanged();
+    }
+
+    private async Task SwitchNotifyChanged(ChangeEventArgs e)
+    {
+        IsSwitchNotifyOn = (bool)e.Value!;
+        if (!IsSwitchNotifyOn)
+        {
+            await UnsubscribeAsync();
+            ResetForm();
+        }
+    }
+
     private void StartTimer()
     {
         timer = new Timer(ClearStatusMessage, null, 5000, Timeout.Infinite);
@@ -176,6 +220,11 @@ else
     public void Dispose()
     {
         timer?.Dispose();
+    }
+
+    private void ResetForm()
+    {
+        Model = new SubscribeModel();
     }
 
     private class SubscribeModel
