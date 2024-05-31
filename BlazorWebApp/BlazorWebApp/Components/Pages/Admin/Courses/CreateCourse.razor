@@ -224,22 +224,19 @@
         {
             var result = await graphQLService.AddCourseAsync(Model);
 
-            if (result.Success)
+            if (result != null)
             {
-                StatusMessage = result.Message;
+                StatusMessage = "course created";
             }
             else
             {
-                StatusMessage = "Something went wrong: " + result.Message;
+                StatusMessage = "Something went wrong: ";
             }
         }
-        catch
+        catch(Exception ex)
         {
-            StatusMessage = "Bad request";
+            StatusMessage = $"Bad request: {ex.Message}";
         }
-
-    }
-
-    
+    }  
 
 }
