@@ -1,0 +1,69 @@
+﻿@rendermode InteractiveServer
+
+@inject ThemeService ThemeService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+
+<div class="btn-switch">
+    <label>Light</label>
+    <label class="switch" for="switch-mode">
+        <input type="checkbox" id="switch-mode" checked="@IsDarkMode" @onchange="ToggleTheme" />
+        <span class="slider round"></span>
+    </label>
+    <label>Dark</label>
+</div>
+
+@code {
+    private bool? IsDarkMode;
+    private string? theme;
+    private string? cookie;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        getCookie();
+        if(cookie == "dark-mode")
+        {
+            IsDarkMode = true;
+        }
+        else
+        {
+            IsDarkMode = false;
+        }
+
+    }
+
+
+
+    private async Task ToggleTheme()
+    {
+        ThemeService.ToggleTheme();
+        string theme = ThemeService.GetTheme();
+
+        if (theme == "dark-mode")
+        {
+            await JSRuntime.InvokeVoidAsync("createCookie", "theme", theme, 365);
+        }
+        else
+        {
+            await JSRuntime.InvokeVoidAsync("removeCookie", "theme");
+        }
+
+        NavigationManager.Refresh();
+    }
+
+    private void getCookie()
+    {
+        if (HttpContext != null)
+        {
+            cookie = HttpContext.Request.Cookies["theme"];
+        }
+        
+    }
+
+}

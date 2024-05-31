@@ -13,9 +13,26 @@
     <HeadOutlet />
 </head>
 
-<body>
+<body class="@darkMode">
     <Routes />
     <script src="_framework/blazor.web.js"></script>
+    <script src="/site.js"></script>
 </body>
 
 </html>
+
+
+@code {
+    private string? darkMode { get; set; }
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpContext != null)
+        {
+            darkMode = HttpContext.Request.Cookies["theme"];
+        }
+
+    }
+}
