@@ -12,9 +12,13 @@
 
     <PageTitle>Admin - Notifications</PageTitle>
 
-@if (usersWithSubscribe is null)
+@if (!isDataLoaded)
 {
     <p>Loading ...</p>
+}
+else if (usersWithSubscribe == null || usersWithSubscribe.Count == 0)
+{
+    <p id="noonehere">No users is currently subscribed to the newsletter.</p>
 }
 else
 {
@@ -33,11 +37,11 @@ else
                 var notifyEmail = userWithNotify.NotifyEmail;
 
                 <div class="user-list-item">
-                    <div class="credentials">                        
+                    <div class="credentials">
                         <div class="full-name">@user.UserProfile!.FirstName @user.UserProfile!.LastName</div>
                         <div class="email">User name: @user.Email</div>
                         <div class="notify-email">Email for subscription: @notifyEmail</div>
-                    </div>                 
+                    </div>
                     <div class="links">
                         <button class="btn-theme" @onclick="(() => ShowUpdateForm(userWithNotify))" @onclick:stopPropagation="true">Read/Update</button>
                         <button class="btn-youtube" @onclick="(() => ShowConfirmation(userWithNotify))" @onclick:stopPropagation="true">Delete</button>
@@ -85,24 +89,25 @@ else
                         </div>
 
                         <hr />
-                        
+
                         <button class="btn-theme" type="submit">Update</button>
                     </EditForm>
                     <button class="btn-gray" @onclick="(() => userToUpdate = null)">Close</button>
                 </div>
             </div>
         }
-        
-        </section>
+
+    </section>
 }
 
 @code {
     private List<(ApplicationUser User, string NotifyEmail)> usersWithSubscribe = new();
     private bool isConfirmationVisible = false;
-    private (ApplicationUser User, string NotifyEmail)?userToDelete;
+    private (ApplicationUser User, string NotifyEmail)? userToDelete;
     private (ApplicationUser User, string NotifyEmail)? userToUpdate;
     private SubscribeModel userToUpdateModel { get; set; } = new();
     private string StatusMessage = "";
+    private bool isDataLoaded = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -117,12 +122,12 @@ else
         .ToListAsync();
 
         usersWithSubscribe = allUsers.Select(user =>
-            (
-                User: user,
-                NotifyEmail: notifyEmails.First(une => une.UserId == user.Id).NotifyEmail
-            )
+        (
+            User: user,
+            NotifyEmail: notifyEmails.First(une => une.UserId == user.Id).NotifyEmail
+        )
         ).ToList();
-
+        isDataLoaded = true;
     }
 
     private async Task UpdateUser()
@@ -165,15 +170,32 @@ else
 
         if (userToDelete != null)
         {
-            // DbContext.Users.Remove(userToDelete);
-            // await DbContext.SaveChangesAsync();
-            // users.Remove(userToDelete);
-            // await InvokeAsync(StateHasChanged);
-            // isConfirmationVisible = false;
+            var existing = await DbContext.UserNotifyEmails.FirstOrDefaultAsync(x => x.UserId == userToDelete.Value.User.Id);
+            if (existing != null)
+            {
+                var emailToDelete = existing.NotifyEmail;
+                DbContext.UserNotifyEmails.Remove(existing);
+                await DbContext.SaveChangesAsync();
+
+                var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/UnSubscribe?code=9LLmQJhDHTbt2Z0O1QXzVK6Gr94yx8LB-pLUzn-l67dUAzFugBvmjA%3D%3D", new { Email = emailToDelete });
+                if (result.IsSuccessStatusCode)
+                {
+                    StatusMessage = "Email unsubscribed successfully!";
+                }
+                else
+                {
+                    StatusMessage = "Failed to unsubscribe email.";
+                }
+
+                usersWithSubscribe.Remove(userToDelete.Value);
+                userToDelete = null;
+                isConfirmationVisible = false;
+                StateHasChanged();
+            }
         }
     }
 
-    private void ShowUpdateForm((ApplicationUser User, string NotifyEmail) userWithNotify)    
+    private void ShowUpdateForm((ApplicationUser User, string NotifyEmail) userWithNotify)
     {
         userToUpdate = userWithNotify;
         userToUpdateModel.Email = userWithNotify.NotifyEmail;

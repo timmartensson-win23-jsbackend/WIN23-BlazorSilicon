@@ -1,8 +1,9 @@
 #course-showcase {
     position: relative;
-    margin-bottom: 10px;
-    padding-bottom:70px;
+    padding-bottom: 70px;
     z-index: 1;
+    background-color: var(--color-gray-001);
+
 
     .header-image {
         width: 100%;
@@ -163,7 +164,7 @@
                 @include xxxl {
                     justify-content: flex-start;
                     margin-left: 0px;
-                    margin-top: 80px;
+                    margin-top: 30px;
                 }
 
                 .created-by {
