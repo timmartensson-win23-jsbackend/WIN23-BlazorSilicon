@@ -58,6 +58,8 @@
         padding: 40px;
         box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
         z-index: 2;
+        background-color: var(--color-gray-001);
+
 
         .content {
             display: flex;
@@ -84,6 +86,7 @@
         z-index: 2;
         overflow-y: auto;
         max-height: 80vh;
+        background-color: var(--color-gray-001);
 
         .content {
             display: flex;
@@ -94,6 +97,16 @@
 
             form {
                 gap: 10px;
+
+                input {
+                    background-color: var(--color-gray-001);
+                    color: var(--color-gray-900);
+                }
+
+                input[disabled] {
+                    background-color: var(--color-gray-100);
+                }
+
 
                 button {
                     margin-top: 10px;
