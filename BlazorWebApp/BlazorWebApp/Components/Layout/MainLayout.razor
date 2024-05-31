@@ -1,17 +1,12 @@
 ﻿
 @inherits LayoutComponentBase
 
-@inject ThemeService ThemeService
 
-<CascadingValue Value="ThemeService.GetTheme" Name="Theme">
-    <CascadingValue Value="ThemeService.ToggleTheme" Name="ToggleTheme">
-        <div class="wrapper @ThemeService.GetTheme()">
-            <Header />
-            @Body
-            <Footer />
-        </div>
-    </CascadingValue>
-</CascadingValue>
+<div class="wrapper">
+    <Header />
+    @Body
+    <Footer />
+</div>
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
