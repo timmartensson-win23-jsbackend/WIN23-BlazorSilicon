@@ -1927,7 +1927,7 @@ header #mobile-menu .account-shortcut img {
 }
 
 #courses-overview {
-  background-color: var(--color-gray-001);
+  background-color: var(--color-gray-000);
   padding-bottom: 20px;
 }
 #courses-overview .courses {
@@ -3539,6 +3539,96 @@ header #mobile-menu .account-shortcut img {
     justify-content: start;
     gap: 2rem;
   }
+}
+
+#admin-notify {
+  margin-top: 100px;
+  width: 100%;
+  position: relative;
+}
+#admin-notify h3 {
+  text-align: center;
+}
+#admin-notify .user-list-item {
+  border: 1px solid var(--color-gray-300);
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+#admin-notify .user-list-item .credentials .full-name {
+  font-style: italic;
+  font-weight: 500;
+}
+#admin-notify .user-list-item .credentials .notify-email {
+  text-decoration: underline;
+}
+#admin-notify .user-list-item .links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  max-height: 40px;
+}
+#admin-notify .confirm-delete {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#admin-notify .confirm-delete .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#admin-notify .confirm-delete .buttons {
+  display: flex;
+  gap: 20px;
+}
+#admin-notify .update-form {
+  position: fixed;
+  width: 400px;
+  top: 10%;
+  left: 50%;
+  border-radius: 12px;
+  background: var(--color-white);
+  padding: 40px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+#admin-notify .update-form .content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+#admin-notify .update-form .content form {
+  gap: 10px;
+}
+#admin-notify .update-form .content form button {
+  margin-top: 10px;
+}
+
+.page-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
 h1:focus {

@@ -2,11 +2,13 @@
 @using BlazorWebApp.Data
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
+@using System.ComponentModel.DataAnnotations
 @rendermode InteractiveServer
 @attribute [Authorize(Roles = "Admin, SuperDuperMegaAdmin")]
 
 @inject ApplicationDbContext DbContext
 @inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager NavigationManager
 
     <PageTitle>Admin - Notifications</PageTitle>
 
@@ -20,9 +22,11 @@ else
     {
         <div class="page-overlay" @onclick="HideForms"></div>
     }
-    <section id="user-index" @onclick="HideForms">
+    <section id="admin-notify" @onclick="HideForms">
         <div class="user-list-group">
+            <h3>Users with Subscription</h3>
             <div class="user-header"></div>
+
             @foreach (var userWithNotify in usersWithSubscribe)
             {
                 var user = userWithNotify.User;
@@ -31,7 +35,8 @@ else
                 <div class="user-list-item">
                     <div class="credentials">                        
                         <div class="full-name">@user.UserProfile!.FirstName @user.UserProfile!.LastName</div>
-                        <div class="email">Email for subscription: @notifyEmail</div>
+                        <div class="email">User name: @user.Email</div>
+                        <div class="notify-email">Email for subscription: @notifyEmail</div>
                     </div>                 
                     <div class="links">
                         <button class="btn-theme" @onclick="(() => ShowUpdateForm(userWithNotify))" @onclick:stopPropagation="true">Read/Update</button>
@@ -60,8 +65,8 @@ else
 
             <div class="update-form" @onclick:stopPropagation="true">
                 <div class="content">
-                    <h2>Update User</h2>
-                    <EditForm Model="userToUpdate" OnValidSubmit="UpdateUser">
+                    <h3>Update subscription</h3>
+                    <EditForm Model="userToUpdateModel" OnValidSubmit="UpdateUser">
                         <div id="form-firstname" class="input-group">
                             <label for="FirstName">First name</label>
                             <InputText id="FirstName" @bind-Value="user.UserProfile!.FirstName" disabled />
@@ -71,8 +76,12 @@ else
                             <InputText id="LastName" @bind-Value="user.UserProfile!.LastName" disabled />
                         </div>
                         <div id="form-email" class="input-group">
+                            <label for="Email">User name</label>
+                            <InputText id="Email" @bind-Value="user.Email" disabled />
+                        </div>
+                        <div id="form-email" class="input-group">
                             <label for="Email">Subscribed Email</label>
-                            <InputText id="Email" @bind-Value="notifyEmail" />
+                            <InputText id="Email" @bind-Value="userToUpdateModel.Email" />
                         </div>
 
                         <hr />
@@ -92,6 +101,8 @@ else
     private bool isConfirmationVisible = false;
     private (ApplicationUser User, string NotifyEmail)?userToDelete;
     private (ApplicationUser User, string NotifyEmail)? userToUpdate;
+    private SubscribeModel userToUpdateModel { get; set; } = new();
+    private string StatusMessage = "";
 
 
     protected override async Task OnInitializedAsync()
@@ -111,16 +122,41 @@ else
                 NotifyEmail: notifyEmails.First(une => une.UserId == user.Id).NotifyEmail
             )
         ).ToList();
-           
+
     }
 
     private async Task UpdateUser()
     {
         if (userToUpdate != null)
         {
-            // DbContext.Users.Update(userToUpdate);
-            // await DbContext.SaveChangesAsync();
-            // userToUpdate = null;
+            var existing = await DbContext.UserNotifyEmails.FirstOrDefaultAsync(x => x.UserId == userToUpdate.Value.User.Id);
+            if (existing != null)
+            {
+                userToUpdateModel.OldEmail = existing.NotifyEmail;
+                existing.NotifyEmail = userToUpdateModel.Email!;
+                DbContext.UserNotifyEmails.Update(existing);
+                await DbContext.SaveChangesAsync();
+
+                var result = await Http.PostAsJsonAsync("https://siliconnewsletterprovider.azurewebsites.net/api/Subscribe?code=wGaBQjD3VYfaK-AwJLKMG-CFdYJ-5Jbw5OQZs9xEHiiTAzFuV01ovg==", userToUpdateModel);
+                if (result.IsSuccessStatusCode)
+                {
+                    StatusMessage = "Email updated successfully!";
+                }
+                else
+                {
+                    StatusMessage = "Failed to update email.";
+                }
+
+                var userIndex = usersWithSubscribe.FindIndex(u => u.User.Id == userToUpdate.Value.User.Id);
+                if (userIndex >= 0)
+                {
+                    usersWithSubscribe[userIndex] = (userToUpdate.Value.User, userToUpdateModel.Email!);
+                }
+
+                userToUpdate = null;
+                StateHasChanged();
+            }
+
         }
     }
 
@@ -140,8 +176,10 @@ else
     private void ShowUpdateForm((ApplicationUser User, string NotifyEmail) userWithNotify)    
     {
         userToUpdate = userWithNotify;
-        isConfirmationVisible = false;              //rätt?
-        StateHasChanged();                          //rätt?
+        userToUpdateModel.Email = userWithNotify.NotifyEmail;
+        userToUpdateModel.OldEmail = userWithNotify.NotifyEmail;
+        isConfirmationVisible = false;
+        StateHasChanged();
     }
 
     private void ShowConfirmation((ApplicationUser User, string NotifyEmail) userWithNotify)
@@ -158,4 +196,19 @@ else
         StateHasChanged();
     }
 
+    private class SubscribeModel
+    {
+        [Required(ErrorMessage = "Email is required.")]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email address.")]
+        public string? Email { get; set; }
+        public string? OldEmail { get; set; }
+        public bool DailyNewsLetter { get; set; } = true;
+        public bool AdvertisingUpdates { get; set; } = true;
+        public bool WeekInReviews { get; set; } = true;
+        public bool EventUpdates { get; set; } = true;
+        public bool StartupsWeekly { get; set; } = true;
+        public bool Podcasts { get; set; } = true;
+
+    }
 }
