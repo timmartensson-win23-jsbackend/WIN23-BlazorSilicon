@@ -1,10 +1,12 @@
 #course-author {
+    background-color: var(--color-gray-001);
+
     .author-content {
         @include xxl {
             display: flex;
         }
 
-        background-color: var(--color-gray-900);
+        background-color: var(--color-gray-901);
 
         .squiggly {
             display: none;

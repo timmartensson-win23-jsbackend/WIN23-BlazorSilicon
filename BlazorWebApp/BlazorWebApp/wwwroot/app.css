@@ -1,8 +1,10 @@
 ﻿@charset "UTF-8";
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap");
 :root {
+  --color-gray-001: #FFFFFF;
   --color-gray-000: #FFFFFF;
   --color-gray-100: #F3F6FF;
+  --color-gray-101: #F3F6FF;
   --color-gray-200: #EFF2FC;
   --color-gray-300: #E2E5F1;
   --color-gray-400: #D4D7E5;
@@ -11,6 +13,7 @@
   --color-gray-700: #565973;
   --color-gray-800: #33354D;
   --color-gray-900: #0B0F19;
+  --color-gray-901: #0B0F19;
   --color-white: #FFFFFF;
   --color-black: #000000;
   --color-transparent: transparent;
@@ -29,8 +32,10 @@
 }
 
 .dark-mode {
+  --color-gray-001: #0B0F19;
   --color-gray-000: #0B0F19;
   --color-gray-100: #33354D;
+  --color-gray-101: #151922;
   --color-gray-200: #565973;
   --color-gray-300: #9397AD;
   --color-gray-400: #B4B7C9;
@@ -39,6 +44,7 @@
   --color-gray-700: #EFF2FC;
   --color-gray-800: #F3F6FF;
   --color-gray-900: #FFFFFF;
+  --color-gray-901: #0B0F19;
   --color-white: #FFFFFF;
   --color-black: #000000;
   --color-transparent: transparent;
@@ -1455,7 +1461,7 @@ header #mobile-menu .account-shortcut img {
 }
 
 .newsletter {
-  background-color: var(--color-gray-200);
+  background-color: var(--color-gray-101);
   padding-top: 80px;
   padding-bottom: 80px;
 }
@@ -1593,7 +1599,7 @@ header #mobile-menu .account-shortcut img {
 }
 
 .contact {
-  background-color: var(--color-gray-100);
+  background-color: var(--color-gray-101);
   z-index: 0;
 }
 .contact .container {
@@ -1646,7 +1652,7 @@ header #mobile-menu .account-shortcut img {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-color: var(--color-white);
+  background-color: var(--color-gray-001);
   border-radius: 0.5rem;
   padding-top: 1rem;
 }
@@ -1714,6 +1720,7 @@ header #mobile-menu .account-shortcut img {
   border-radius: 0.5rem !important;
   border: 0.06rem solid var(--color-gray-400);
   background-color: var(--color-gray-100);
+  color: var(--color-gray-900);
 }
 .contact .container .contact-form form .form-content input::placeholder {
   color: var(--color-gray-500);
@@ -1927,7 +1934,7 @@ header #mobile-menu .account-shortcut img {
 }
 
 #courses-overview {
-  background-color: var(--color-gray-100);
+  background-color: var(--color-gray-001);
   padding-bottom: 20px;
 }
 #courses-overview .courses {
@@ -2270,9 +2277,9 @@ header #mobile-menu .account-shortcut img {
 
 #course-showcase {
   position: relative;
-  margin-bottom: 10px;
   padding-bottom: 70px;
   z-index: 1;
+  background-color: var(--color-gray-001);
 }
 #course-showcase .header-image {
   width: 100%;
@@ -2414,7 +2421,7 @@ header #mobile-menu .account-shortcut img {
   #course-showcase .container .header-container .author {
     justify-content: flex-start;
     margin-left: 0px;
-    margin-top: 80px;
+    margin-top: 30px;
   }
 }
 #course-showcase .container .header-container .author .created-by {
@@ -2441,7 +2448,7 @@ header #mobile-menu .account-shortcut img {
   }
 }
 
-#course-description html, #course-description body {
+#course-description {
   background-color: var(--color-gray-001);
 }
 @media (min-width: 1600px) {
@@ -2568,7 +2575,7 @@ header #mobile-menu .account-shortcut img {
   content: counter(point);
   position: absolute;
   right: 110%;
-  color: var(--color-gray-900);
+  color: var(--color-gray-901);
   width: 72px;
   height: 72px;
   display: inline-flex;
@@ -2580,8 +2587,11 @@ header #mobile-menu .account-shortcut img {
   border-radius: 50%;
 }
 
+#course-author {
+  background-color: var(--color-gray-001);
+}
 #course-author .author-content {
-  background-color: var(--color-gray-900);
+  background-color: var(--color-gray-901);
 }
 @media (min-width: 1400px) {
   #course-author .author-content {
@@ -3539,6 +3549,12 @@ header #mobile-menu .account-shortcut img {
     justify-content: start;
     gap: 2rem;
   }
+}
+
+#noonehere {
+  text-align: center;
+  font-style: italic;
+  margin-top: 5rem;
 }
 
 #admin-notify {
