@@ -12,109 +12,108 @@
     <h2>Create A New Course</h2>
     <EditForm Model="Model" method="post" OnValidSubmit="HandleSubmit" FormName="createcourse" novalidate>
         <DataAnnotationsValidator/>
-
+        <h4>General Information about the course</h4>
         <div class="course-info">
-            <h3>General Information about the course</h3>
-            <div>
+            <div id="coursetitle" class="input-group">
                 <label for="Title">Course Title</label>
                 <InputText @bind-Value="Model.Title" />
             </div>
-            <div>
+            <div id="courseprice" class="input-group">
                 <label for="Price">Price</label>
                 <InputText @bind-Value="Model.Price" />
             </div>
-            <div>
+            <div id ="coursediscount" class="input-group">
                 <label for="DiscountPrice">Discount Price</label>
                 <InputText @bind-Value="Model.DiscountPrice" />
             </div>
-            <div>
+            <div id ="courseimage" class="input-group">
                 <label for="CourseImage">Image url</label>
                 <InputText @bind-Value="Model.CourseImage" />
             </div>
-            <div>
+            <div id="courseimagealt" class="input-group">
                 <label for="CourseImageAltText">Alt text for course image</label>
                 <InputText @bind-Value="Model.CourseImageAltText" />
             </div>
-            <div>
+            <div id="courserating" class="input-group">
                 <label for="Rating">Rating</label>
                 <InputText @bind-Value="Model.Rating" />
             </div>
-            <div>
+            <div id="coursereviews" class="input-group">
                 <label for="Reviews">Reviews</label>
                 <InputText @bind-Value="Model.Reviews" />
             </div>
-            <div>
+            <div id="courseviews" class="input-group">
                 <label for="Views">Views</label>
                 <InputText @bind-Value="Model.Views" />
             </div>
-            <div>
+            <div id="courselikespercent" class="input-group">
                 <label for="LikesInPercent">Likes in percent</label>
                 <InputText @bind-Value="Model.LikesInPercent" />
             </div>
-            <div>
+            <div id="courselikesnumbers" class="input-group">
                 <label for="LikesInNumbers">Likes in numbers</label>
                 <InputText @bind-Value="Model.LikesInNumbers" />
             </div>
         </div>
 
         <div class="author-info">
-            <h3>Author Information</h3>
-            <div>
+            <h4>Author Information</h4>
+            <div id="courseauthorname" class="input-group">
                 <label for="AuthorName">Author name</label>
                 <InputText @bind-Value="Model.AuthorName" />
             </div>
-            <div>
+            <div id="courseauthorbio" class="input-group">
                 <label for="AutherBio">Author biography</label>
                 <InputText @bind-Value="Model.AutherBio" />
             </div>
-            <div>
+            <div id="courseauthorimage" class="input-group">
                 <label for="AuthorImage">Image of author</label>
                 <InputText @bind-Value="Model.AuthorImage" />
             </div>
-            <div>
+            <div id="courseauthorimagealt" class="input-group">
                 <label for="AuthorImageAltText">Alt text for author image</label>
                 <InputText @bind-Value="Model.AutherImageAltText" />
             </div>
-            <div>
+            <div id="courseyoutube" class="input-group">
                 <label for="YouTubeSubscribers">YouTube Subscribers</label>
                 <InputText @bind-Value="Model.YouTubeSubscribers" />
             </div>
-            <div>
+            <div id="coursefacebook" class="input-group">
                 <label for="FaceBookFollowers">FaceBook Followers</label>
                 <InputText @bind-Value="Model.FaceBookFollowers" />
             </div>
         </div>
 
         <div class="course-details">
-            <h3>Details about the Course</h3>
-            <div>
+            <h4>Details about the Course</h4>
+            <div id="courseshowcaseimage" class="input-group">
                 <label for="ShowcaseImage">Image url for showcase</label>
                 <InputText @bind-Value="Model.ShowcaseImage" />
             </div>
-            <div>
+            <div id="coursedescription" class="input-group">
                 <label for="CourseDescription">Description</label>
                 <InputText @bind-Value="Model.CourseDescription" />
             </div>
-            <div>
+            <div id="courseviewhours" class="input-group">
                 <label for="ViewHours">View Hours</label>
                 <InputText @bind-Value="Model.ViewHours" />
             </div>
-            <div>
+            <div id="coursearticles" class="input-group">
                 <label for="Articles">Articles</label>
                 <InputText @bind-Value="Model.Articles" />
             </div>
-            <div>
+            <div id="courseresources" class="input-group">
                 <label for="Resources">Resourses</label>
                 <InputText @bind-Value="Model.Resources" />
             </div>
-            <div>
+            <div id="courseaccesstime" class="input-group">
                 <label for="AccessTime">Access Time</label>
                 <InputText @bind-Value="Model.AccessTime" />
             </div>
-            <div>
+            <div id="courseprogramtitle" class="input-group">
                 <label for="ProgramDetailsTitle">Program Details Title</label>
                 <InputText id="ProgramDetailsTitle" @bind-Value="newProgramDetailsTitle" />
-                <button type="button" @onclick="AddProgramDetailsTitle">Add</button>
+                <button class="btn-gray" type="button" @onclick="AddProgramDetailsTitle">Add to list</button>
                 <ul>
                     @if(Model.ProgramDetailsTitle != null)
                     {
@@ -126,10 +125,10 @@
                    
                 </ul>
             </div>
-            <div>
+            <div id="courseprogramtext" class="input-group">
                 <label for="ProgramDetailsText">Program Details Text</label>
                 <InputText id="ProgramDetailsText" @bind-Value="newProgramDetailsText" />
-                <button type="button" @onclick="AddProgramDetailsText">Add</button>
+                <button class="btn-gray" type="button" @onclick="AddProgramDetailsText">Add to list</button>
                 <ul>
                     @if (Model.ProgramDetailsText != null)
                     {
@@ -140,10 +139,10 @@
                     }
                 </ul>
             </div>
-            <div>
+            <div id="courselearnpoints" class="input-group">
                 <label for="LearnPoints">Learn Points</label>
                 <InputText id="LearnPoints" @bind-Value="newLearnPoint" />
-                <button type="button" @onclick="AddLearnPoint">Add</button>
+                <button class="btn-gray" type="button" @onclick="AddLearnPoint">Add to list</button>
                 <ul>
                     @if (Model.LearnPoints != null)
                     {
@@ -154,7 +153,7 @@
                     }
                 </ul>
             </div>
-            <div>
+            <div id="coursecategory" class="input-group">
                 <label for="Category">Category</label>
                 <InputText @bind-Value="Model.Category" />
             </div>
@@ -177,7 +176,9 @@
     private string? newProgramDetailsTitle;
     private string? newProgramDetailsText;
     private string? newLearnPoint;
-    private string? StatusMessage { get; set; }
+    private string? StatusMessage { get; set; } = "";
+    private Timer? timer;
+
 
     private void AddProgramDetailsTitle()
     {
@@ -222,24 +223,46 @@
     {
         try
         {
-            var result = await graphQLService.AddCourseAsync(Model);
+            var (result, errorMessage) = await graphQLService.AddCourseAsync(Model);
 
-            if (result.Success)
+            if (result != null)
             {
-                StatusMessage = result.Message;
+                StatusMessage = "course created successfully";
+                ResetForm();
             }
             else
             {
-                StatusMessage = "Something went wrong: " + result.Message;
-            }
-        }
-        catch
-        {
-            StatusMessage = "Bad request";
-        }
+                StatusMessage = $"Error: {errorMessage}";
 
+            }
+            StartTimer();
+        }
+        catch(Exception ex)
+        {
+            StatusMessage = $"Unexpected error: {ex.Message}";
+            StartTimer();
+        }
+    }  
+
+
+    private void StartTimer()
+    {
+        timer = new Timer(ClearStatusMessage, null, 5000, Timeout.Infinite);
     }
 
-    
+    private void ClearStatusMessage(object? state)
+    {
+        StatusMessage = string.Empty;
+        InvokeAsync(StateHasChanged);
+    }
 
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+
+    private void ResetForm()
+    {
+        Model = new CreateCourseModel();
+    }
 }

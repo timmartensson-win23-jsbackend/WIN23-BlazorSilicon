@@ -3657,6 +3657,79 @@ header #mobile-menu .account-shortcut img {
   z-index: 1;
 }
 
+#createcourse {
+  margin-top: 4rem;
+}
+#createcourse h2 {
+  text-align: center;
+}
+#createcourse form h4 {
+  text-align: center;
+  margin-top: 2rem;
+}
+#createcourse form .course-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+@media (min-width: 1200px) {
+  #createcourse form .course-info {
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "coursetitle coursetitle" "courseprice coursediscount" "courseimage courseimagealt" "courserating coursereviews" "courselikespercent courselikesnumbers" "courseviews . ";
+  }
+}
+#createcourse form .course-info #coursetitle {
+  grid-area: coursetitle;
+}
+#createcourse form .course-info #courseprice {
+  grid-area: courseprice;
+}
+#createcourse form .course-info #coursediscount {
+  grid-area: coursediscount;
+}
+#createcourse form .course-info #courseimage {
+  grid-area: courseimage;
+}
+#createcourse form .course-info #courseimagealt {
+  grid-area: courseimagealt;
+}
+#createcourse form .course-info #courserating {
+  grid-area: courserating;
+}
+#createcourse form .course-info #coursereviews {
+  grid-area: coursereviews;
+}
+#createcourse form .course-info #courseviews {
+  grid-area: courseviews;
+}
+#createcourse form .course-info #courselikespercent {
+  grid-area: courselikespercent;
+}
+#createcourse form .course-info #courselikesnumbers {
+  grid-area: courselikesnumbers;
+}
+#createcourse form .btn-gray {
+  max-width: 40%;
+  border-radius: 6px;
+  margin-top: 0.5rem;
+}
+@media (min-width: 768px) {
+  #createcourse form .btn-gray {
+    max-width: 20%;
+  }
+}
+#createcourse form .btn-theme {
+  margin-top: 1rem;
+}
+#createcourse form span {
+  margin-top: 1rem;
+}
+
 h1:focus {
   outline: none;
 }

@@ -1,0 +1,88 @@
+#createcourse {
+    margin-top: 4rem;
+
+    h2 {
+        text-align: center;
+    }
+
+    form {
+        h4 {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .course-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+
+            @include xl {
+                display: grid;
+                gap: 1rem 2rem;
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas: "coursetitle coursetitle" "courseprice coursediscount" "courseimage courseimagealt" "courserating coursereviews" "courselikespercent courselikesnumbers" "courseviews . ";
+            }
+
+            #coursetitle {
+                grid-area: coursetitle;
+            }
+
+            #courseprice {
+                grid-area: courseprice;
+            }
+
+            #coursediscount {
+                grid-area: coursediscount;
+            }
+
+            #courseimage {
+                grid-area: courseimage;
+            }
+
+            #courseimagealt {
+                grid-area: courseimagealt;
+            }
+
+            #courserating {
+                grid-area: courserating;
+            }
+
+            #coursereviews {
+                grid-area: coursereviews;
+            }
+
+            #courseviews {
+                grid-area: courseviews;
+            }
+
+            #courselikespercent {
+                grid-area: courselikespercent;
+            }
+
+            #courselikesnumbers {
+                grid-area: courselikesnumbers;
+            }
+        }
+
+        .btn-gray {
+            max-width: 40%;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+
+            @include md {
+                max-width: 20%;
+            }
+        }
+
+        .btn-theme {
+            margin-top: 1rem;
+        }
+
+        span {
+            margin-top: 1rem;
+        }
+    }
+}
