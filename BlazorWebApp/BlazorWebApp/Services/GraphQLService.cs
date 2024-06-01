@@ -1,6 +1,7 @@
 ﻿using BlazorWebApp.Components.Pages.Admin.Courses;
 using BlazorWebApp.Models.AdminPortal.Courses;
 using BlazorWebApp.Models.Courses;
+using static System.Net.WebRequestMethods;
 
 namespace BlazorWebApp.Services;
 
@@ -8,7 +9,7 @@ public class GraphQLService(HttpClient httpClient)
 {
     private readonly HttpClient _httpClient = httpClient;
 
-    public async Task<CreateCourseResponse> AddCourseAsync(CreateCourseModel course)
+    public async Task<(CreateCourseResponse? courseResponse, string? errorMessage)> AddCourseAsync(CreateCourseModel course)
     {
         var mutation = @"
         mutation($input: CourseCreateRequestInput!) { 
@@ -69,18 +70,19 @@ public class GraphQLService(HttpClient httpClient)
 
             if(result?.Data?.CreateCourse == null)
             {
-                throw new Exception("GraphQL mutation returned null dadta.");
+                return (null, "GraphQl mutation returnded null data.");
+
             }
-            return result.Data.CreateCourse;
+            return (result.Data.CreateCourse, null);
         }
         catch(HttpRequestException httpEx)
         {
-            throw new Exception("HTTP Request failed.", httpEx);
+            return (null, $"HTTP Request failed: {httpEx.Message}");
         }
         catch (Exception ex)
         {
-            throw new Exception("An error occurred: ", ex);
-        }            
+            return (null, $"HTTP Request failed: {ex.Message}");
+        }
 
     }
 }
