@@ -23,7 +23,7 @@
                 display: grid;
                 gap: 1rem 2rem;
                 grid-template-columns: 1fr 1fr;
-                grid-template-areas: "coursetitle coursetitle" "courseprice coursediscount" "courseimage courseimagealt" "courserating coursereviews" "courselikespercent courselikesnumbers" "courseviews courseviews";
+                grid-template-areas: "coursetitle coursetitle" "courseprice coursediscount" "courseimage courseimagealt" "courserating coursereviews" "courselikespercent courselikesnumbers" "courseviews . ";
             }
 
             #coursetitle {
