@@ -152,46 +152,61 @@ else
                         <div id="courseprogramtitle" class="input-group">
                             <label for="ProgramDetailsTitle">Program Details Title</label>
                             <InputText id="ProgramDetailsTitle" @bind-Value="newProgramDetailsTitle" />
-                            <button class="btn-gray" type="button" @onclick="AddProgramDetailsTitle">Add to list</button>
+                            <button class="btn-gray btn-add" type="button" @onclick="AddProgramDetailsTitle">Add to list</button>
                             <ul>
                                 @if (courseToUpdate.ProgramDetailsTitle != null)
                                 {
                                     @foreach (var title in courseToUpdate.ProgramDetailsTitle)
                                     {
-                                        <li>@title</li>
+                                        var tempTitle = title;
+                                        <li>
+                                            <InputText @bind-Value="tempTitle" />
+                                            <button class="btn-gray btn-list" type="button" @onclick="(() => RemoveProgramDetailsTitle(title))">Remove</button>
+                                        </li>
                                     }
                                 }
 
                             </ul>
                         </div>
+                        <hr />
                         <div id="courseprogramtext" class="input-group">
                             <label for="ProgramDetailsText">Program Details Text</label>
                             <InputText id="ProgramDetailsText" @bind-Value="newProgramDetailsText" />
-                            <button class="btn-gray" type="button" @onclick="AddProgramDetailsText">Add to list</button>
+                            <button class="btn-gray btn-add" type="button" @onclick="AddProgramDetailsText">Add to list</button>
                             <ul>
                                 @if (courseToUpdate.ProgramDetailsText != null)
                                 {
                                     @foreach (var text in courseToUpdate.ProgramDetailsText)
                                     {
-                                        <li>@text</li>
+                                        var tempText = text;
+                                        <li>
+                                            <InputText @bind-Value="tempText" />
+                                            <button class="btn-gray btn-list" type="button" @onclick="(() => RemoveProgramDetailsText(text))">Remove</button>
+                                        </li>
                                     }
                                 }
                             </ul>
                         </div>
+                        <hr />
                         <div id="courselearnpoints" class="input-group">
                             <label for="LearnPoints">Learn Points</label>
                             <InputText id="LearnPoints" @bind-Value="newLearnPoint" />
-                            <button class="btn-gray" type="button" @onclick="AddLearnPoint">Add to list</button>
+                            <button class="btn-gray btn-add" type="button" @onclick="AddLearnPoint">Add to list</button>
                             <ul>
                                 @if (courseToUpdate.LearnPoints != null)
                                 {
                                     @foreach (var point in courseToUpdate.LearnPoints)
                                     {
-                                        <li>@point</li>
+                                        var tempPoint = point;
+                                        <li>
+                                            <InputText @bind-Value="tempPoint" />
+                                            <button class="btn-gray btn-list" type="button" @onclick="(() => RemoveLearnPoint(point))">Remove</button>
+                                        </li>
                                     }
                                 }
                             </ul>
                         </div>
+                        <hr />
                         <div id="coursecategory" class="input-group">
                             <label for="Category">Category</label>
                             <InputText @bind-Value="courseToUpdate.Category" />
@@ -299,6 +314,7 @@ else
         }
         StartTimer();
     }
+
     private async Task DeleteConfirmed()
     {
         if (courseToDelete is not null)
@@ -352,6 +368,24 @@ else
             newProgramDetailsTitle = string.Empty;
         }
     }
+
+
+
+    private void RemoveProgramDetailsTitle(string title)
+    {
+        courseToUpdate?.ProgramDetailsTitle?.Remove(title);
+    }
+
+    private void RemoveProgramDetailsText(string text)
+    {
+        courseToUpdate?.ProgramDetailsText?.Remove(text);
+    }
+
+    private void RemoveLearnPoint(string point)
+    {
+        courseToUpdate?.LearnPoints?.Remove(point);
+    }
+
 
     private void AddProgramDetailsText()
     {

@@ -3972,6 +3972,13 @@ header #mobile-menu .account-shortcut img {
 #admin-updatedeletecourse .update-form .content form button {
   margin-top: 10px;
 }
+#admin-updatedeletecourse .update-form .content form .btn-add {
+  margin-bottom: 1rem;
+}
+#admin-updatedeletecourse .update-form .content form .btn-list {
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
+}
 
 .page-overlay {
   position: fixed;
