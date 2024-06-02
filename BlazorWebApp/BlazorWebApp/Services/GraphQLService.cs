@@ -166,19 +166,17 @@ public class GraphQLService(HttpClient httpClient)
     }
 
 
-    public async Task<bool> DeleteCourseAsync(string courseId)   //skiten fungerar inte!!
+    public async Task<bool> DeleteCourseAsync(CoursesModel course)   //skiten fungerar inte!!
     {
-        var mutation = @"                   
-        mutation($id: ID!) {
-            deleteCourse(id: $id) {
-                id
-            }
+        var mutation = @"
+            mutation($input: CourseDeleteRequestInput!) {
+            deleteCourse(input: $input) 
         }";
+               
 
-        
         var variables = new
         {
-            id = courseId
+            input = new { id = course.Id }
         };
 
         var request = new
@@ -189,7 +187,7 @@ public class GraphQLService(HttpClient httpClient)
 
         try
         {
-            var response = await _httpClient.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=F3ve4AdrXYNCGI-2JWQFXh1E_D_dWo4yAmdz3qhVhM9JAzFucoYaqg%3D%3D", request);
+            var response = await _httpClient.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=Ms8IxsC9w8G_dT8KJZbuf11TR3o7reeP9ld8DSPtnesZAzFuaTdsNw%3D%3D", request);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<GraphQLResponse>();
 
