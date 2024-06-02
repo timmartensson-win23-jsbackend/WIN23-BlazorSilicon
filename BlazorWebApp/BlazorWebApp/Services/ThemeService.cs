@@ -29,5 +29,6 @@ public class ThemeService
         {
             selectedTheme = "light-mode";
         }
+        OnThemeChanged?.Invoke();
     }
 }
