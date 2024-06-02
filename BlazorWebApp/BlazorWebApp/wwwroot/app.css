@@ -3877,6 +3877,32 @@ header #mobile-menu .account-shortcut img {
   margin-top: 100px;
   width: 100%;
   position: relative;
+  position: relative;
+}
+#admin-updatedeletecourse h3 {
+  padding-top: 1rem;
+  text-align: center;
+}
+#admin-updatedeletecourse .alert {
+  display: none;
+  position: absolute;
+  top: -4rem;
+  left: 1rem;
+  width: 60%;
+}
+#admin-updatedeletecourse .alert:not(:empty) {
+  display: block;
+}
+@media (min-width: 768px) {
+  #admin-updatedeletecourse .alert {
+    width: 30%;
+  }
+}
+@media (min-width: 1200px) {
+  #admin-updatedeletecourse .alert {
+    top: -4rem;
+    width: 20%;
+  }
 }
 #admin-updatedeletecourse .user-list-item {
   border: 1px solid var(--color-gray-300);

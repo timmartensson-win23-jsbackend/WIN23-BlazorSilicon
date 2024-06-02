@@ -19,6 +19,10 @@ else
     }
     <section id="admin-updatedeletecourse" @onclick="HideForms">
         <div class="user-list-group">
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <span id="success" class="alert alert-dark">@StatusMessage</span>
+            }
             <h3>Courses</h3>
             <div class="user-header"></div>
 
@@ -218,6 +222,10 @@ else
     private string? newProgramDetailsTitle;
     private string? newProgramDetailsText;
     private string? newLearnPoint;
+    private string? StatusMessage { get; set; } = "";
+    private Timer? timer;
+
+
 
 
     protected override async Task OnInitializedAsync()
@@ -283,12 +291,13 @@ else
         {
             await LoadCourses();
             courseToUpdate = null;
+            StatusMessage = "Course Updated";
         }
         else
         {
-            // Handle error
-            Console.WriteLine($"Update failed: {updateResult.errorMessage}");
+            StatusMessage = $"Update failed: {updateResult.errorMessage}";
         }
+        StartTimer();
     }
     private async Task DeleteConfirmed()
     {
@@ -296,6 +305,22 @@ else
         {
 
         }
+    }
+
+    private void StartTimer()
+    {
+        timer = new Timer(ClearStatusMessage, null, 5000, Timeout.Infinite);
+    }
+
+    private void ClearStatusMessage(object? state)
+    {
+        StatusMessage = string.Empty;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
     }
 
     private void ShowUpdateForm(CoursesModel course)
