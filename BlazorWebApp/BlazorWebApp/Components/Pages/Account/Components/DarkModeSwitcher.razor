@@ -5,19 +5,14 @@
 @inject IJSRuntime JSRuntime
 
 
-<div class="btn-switch">
-    <label>Light</label>
-    <label class="switch" for="switch-mode">
-        <input type="checkbox" id="switch-mode" checked="@IsDarkMode" @onchange="ToggleTheme" />
-        <span class="slider round"></span>
-    </label>
-    <label>Dark</label>
-</div>
+<button type="button" id="darkmode-button" @onmouseover="PlaySound" @onclick="ToggleThemeAsync"><span>Start Coding</span></button>
 
 @code {
+    private bool isSoundPlaying = false;
     private bool? IsDarkMode;
     private string? theme;
     private string? cookie;
+    private bool isFirstClick = true;
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -36,13 +31,30 @@
             IsDarkMode = false;
         }
 
+        ThemeService.OnThemeChanged += Refresh;
+
+    }
+
+    private void Refresh()
+    {
+        StateHasChanged(); // refresh the component
+    }
+
+    public void Dispose()
+    {
+        ThemeService.OnThemeChanged -= Refresh; // unsubscribe when the component is disposed
     }
 
 
-
-    private async Task ToggleTheme()
+    private async Task ToggleThemeAsync()
     {
         ThemeService.ToggleTheme();
+        if (isFirstClick)
+        {
+            ThemeService.ToggleTheme();
+            isFirstClick = false;
+        }
+
         string theme = ThemeService.GetTheme();
 
         if (theme == "dark-mode")
@@ -64,6 +76,18 @@
             cookie = HttpContext.Request.Cookies["theme"];
         }
         
+    }
+
+    private async Task PlaySound()
+    {
+        if (!isSoundPlaying)
+        {
+            isSoundPlaying = true;
+            Console.WriteLine("PlaySound method called");
+            await JSRuntime.InvokeVoidAsync("playSound");
+            await Task.Delay(TimeSpan.FromSeconds(8)); // wait for 8 seconds
+            isSoundPlaying = false;
+        }
     }
 
 }
