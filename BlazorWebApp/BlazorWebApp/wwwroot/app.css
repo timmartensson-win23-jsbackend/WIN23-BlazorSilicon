@@ -3776,6 +3776,86 @@ header #mobile-menu .account-shortcut img {
 #createcourse form .course-info #courselikesnumbers {
   grid-area: courselikesnumbers;
 }
+#createcourse form .author-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+@media (min-width: 1200px) {
+  #createcourse form .author-info {
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "courseauthorname courseauthorname" "courseauthorbio courseauthorbio" "courseauthorimage courseauthorimagealt" "courseyoutube coursefacebook";
+  }
+}
+#createcourse form .author-info #courseauthorname {
+  grid-area: courseauthorname;
+}
+#createcourse form .author-info #courseauthorbio {
+  grid-area: courseauthorbio;
+}
+#createcourse form .author-info #courseauthorimage {
+  grid-area: courseauthorimage;
+}
+#createcourse form .author-info #courseauthorimagealt {
+  grid-area: courseauthorimagealt;
+}
+#createcourse form .author-info #courseyoutube {
+  grid-area: courseyoutube;
+}
+#createcourse form .author-info #coursefacebook {
+  grid-area: coursefacebook;
+}
+#createcourse form .course-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 15px;
+}
+@media (min-width: 1200px) {
+  #createcourse form .course-details {
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "coursecategory courseshowcaseimage" "coursedescription coursedescription" "courseviewhours coursearticles" "courseresources courseaccesstime" "courseprogramtitle courseprogramtitle" "courseprogramtext courseprogramtext" "courselearnpoints courselearnpoints";
+  }
+}
+#createcourse form .course-details #courseshowcaseimage {
+  grid-area: courseshowcaseimage;
+}
+#createcourse form .course-details #coursedescription {
+  grid-area: coursedescription;
+}
+#createcourse form .course-details #courseviewhours {
+  grid-area: courseviewhours;
+}
+#createcourse form .course-details #coursearticles {
+  grid-area: coursearticles;
+}
+#createcourse form .course-details #courseresources {
+  grid-area: courseresources;
+}
+#createcourse form .course-details #courseaccesstime {
+  grid-area: courseaccesstime;
+}
+#createcourse form .course-details #courseprogramtitle {
+  grid-area: courseprogramtitle;
+}
+#createcourse form .course-details #courseprogramtext {
+  grid-area: courseprogramtext;
+}
+#createcourse form .course-details #courselearnpoints {
+  grid-area: courselearnpoints;
+}
+#createcourse form .course-details #coursecategory {
+  grid-area: coursecategory;
+}
 #createcourse form .btn-gray {
   max-width: 40%;
   border-radius: 6px;

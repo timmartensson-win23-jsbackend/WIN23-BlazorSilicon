@@ -67,6 +67,102 @@
             }
         }
 
+        .author-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+
+            @include xl {
+                display: grid;
+                gap: 1rem 2rem;
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas: "courseauthorname courseauthorname" "courseauthorbio courseauthorbio" "courseauthorimage courseauthorimagealt" "courseyoutube coursefacebook";
+            }
+
+            #courseauthorname {
+                grid-area: courseauthorname;
+            }
+
+            #courseauthorbio {
+                grid-area: courseauthorbio;
+            }
+
+            #courseauthorimage {
+                grid-area: courseauthorimage;
+            }
+
+            #courseauthorimagealt {
+                grid-area: courseauthorimagealt;
+            }
+
+            #courseyoutube {
+                grid-area: courseyoutube;
+            }
+
+            #coursefacebook {
+                grid-area: coursefacebook;
+            }
+        }
+
+        .course-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 15px;
+
+            @include xl {
+                display: grid;
+                gap: 1rem 2rem;
+                grid-template-columns: 1fr 1fr;
+                grid-template-areas: "coursecategory courseshowcaseimage" "coursedescription coursedescription" "courseviewhours coursearticles" "courseresources courseaccesstime" "courseprogramtitle courseprogramtitle" "courseprogramtext courseprogramtext" "courselearnpoints courselearnpoints";
+            }
+
+            #courseshowcaseimage {
+                grid-area: courseshowcaseimage;
+            }
+
+            #coursedescription {
+                grid-area: coursedescription;
+            }
+
+            #courseviewhours {
+                grid-area: courseviewhours;
+            }
+
+            #coursearticles {
+                grid-area: coursearticles;
+            }
+
+            #courseresources {
+                grid-area: courseresources;
+            }
+
+            #courseaccesstime {
+                grid-area: courseaccesstime;
+            }
+
+            #courseprogramtitle {
+                grid-area: courseprogramtitle;
+            }
+
+            #courseprogramtext {
+                grid-area: courseprogramtext;
+            }
+
+            #courselearnpoints {
+                grid-area: courselearnpoints;
+            }
+
+            #coursecategory {
+                grid-area: coursecategory;
+            }
+        }
+
         .btn-gray {
             max-width: 40%;
             border-radius: 6px;
