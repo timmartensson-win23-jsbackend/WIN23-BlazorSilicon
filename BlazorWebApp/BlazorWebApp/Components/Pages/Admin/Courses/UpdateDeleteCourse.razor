@@ -1,6 +1,9 @@
 ﻿@page "/admin/updatedeletecourse"
+@using BlazorWebApp.Models.AdminPortal.Courses
 @attribute [StreamRendering]
 @rendermode InteractiveServer
+@inject GraphQLService graphQLService
+
 
 <PageTitle>Administrate Courses</PageTitle>
 
@@ -217,10 +220,14 @@ else
     private string? newLearnPoint;
 
 
-
     protected override async Task OnInitializedAsync()
     {
+        await LoadCourses();
 
+    }
+
+    private async Task LoadCourses()
+    {
         var query = new GraphQLQuery { Query = "{getAllCourses {id showcaseImage courseImage courseImageAltText isBestSeller title category {categoryName} courseDescription learnPoints articles resources accessTime discountPrice price programDetailsTitle programDetailsText reviews likesInNumbers likesInPercent viewHours authorImage autherImageAltText authorName autherBio youTubeSubscribers faceBookFollowers rating views}}" };
         var respons = await Http.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=Ms8IxsC9w8G_dT8KJZbuf11TR3o7reeP9ld8DSPtnesZAzFuaTdsNw%3D%3D", query);
 
@@ -262,11 +269,26 @@ else
         }
     }
 
-        
-    
+
+
     private async Task UpdateCourse()
     {
+        if (courseToUpdate == null)
+        {
+            return;
+        }
 
+        var updateResult = await graphQLService.UpdateCourseAsync(courseToUpdate);
+        if (updateResult.courseResponse != null)
+        {
+            await LoadCourses();
+            courseToUpdate = null;
+        }
+        else
+        {
+            // Handle error
+            Console.WriteLine($"Update failed: {updateResult.errorMessage}");
+        }
     }
     private async Task DeleteConfirmed()
     {
