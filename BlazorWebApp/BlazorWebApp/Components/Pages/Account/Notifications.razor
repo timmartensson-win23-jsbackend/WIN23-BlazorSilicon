@@ -11,6 +11,7 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager NavigationManager
 @inject ApplicationDbContext DbContext
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Notifications</PageTitle>
 
@@ -45,8 +46,12 @@ else
                     </div>
                     <p>If you would like to unsubscribe from the newsletter, just turn off the switch.</p>
 
-                    <DarkModeSwitcher />
-                    <p>Tortor massa porttitor enim tristique neque fermentum sed.</p>
+                    <div class="holy-button">
+                        <DarkModeSwitcher />
+                        <p>The holy dark mode button!</p>
+                    </div>
+
+
                 </div>
 
                 <div class="form-buttons">
@@ -236,5 +241,11 @@ else
         public bool StartupsWeekly { get; set; } = true;
         public bool Podcasts { get; set; } = true;
 
+    }
+
+    private async Task PlaySound()
+    {
+        Console.WriteLine("PlaySound method called");
+        await JSRuntime.InvokeVoidAsync("playSound");
     }
 }

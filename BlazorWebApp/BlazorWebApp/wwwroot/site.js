@@ -11,3 +11,8 @@ window.createCookie = (name, value, days) => {
 window.removeCookie = (name) => {
     document.cookie = name + '=; Max-Age=-99999999;';
 }
+
+window.playSound = () => {
+    var audio = new Audio('Audio/Holy.mp3');
+    audio.play();
+}
