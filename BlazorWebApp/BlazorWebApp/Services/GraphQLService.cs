@@ -166,7 +166,7 @@ public class GraphQLService(HttpClient httpClient)
     }
 
 
-    public async Task<bool> DeleteCourseAsync(CoursesModel course)   //skiten fungerar inte!!
+    public async Task<bool> DeleteCourseAsync(CoursesModel course)  
     {
         var mutation = @"
             mutation($input: CourseDeleteRequestInput!) {
