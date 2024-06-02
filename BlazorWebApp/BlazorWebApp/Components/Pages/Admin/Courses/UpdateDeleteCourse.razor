@@ -1,0 +1,91 @@
+﻿<h3>UpdateDeleteCourse</h3>
+
+
+
+
+
+@* @if (isConfirmationVisible || courseToUpdate != null)
+{
+    <div class="page-overlay" @onclick="HideForms"></div>
+}
+<section id="admin-updatedeletecourse" @onclick="HideForms">
+    <div class="user-list-group">
+        <h3>Courses</h3>
+        <div class="user-header"></div>
+
+        @foreach (var userWithNotify in usersWithSubscribe)
+        {
+            var user = userWithNotify.User;
+            var notifyEmail = userWithNotify.NotifyEmail;
+
+            <div class="user-list-item">
+                <div class="credentials">
+                    <div class="full-name">@user.UserProfile!.FirstName @user.UserProfile!.LastName</div>
+                    <div class="email">User name: @user.Email</div>
+                    <div class="notify-email">Email for subscription: @notifyEmail</div>
+                </div>
+                <div class="links">
+                    <button class="btn-theme" @onclick="(() => ShowUpdateForm(userWithNotify))" @onclick:stopPropagation="true">Read/Update</button>
+                    <button class="btn-youtube" @onclick="(() => ShowConfirmation(userWithNotify))" @onclick:stopPropagation="true">Delete</button>
+                </div>
+            </div>
+        }
+    </div>
+    @if (isConfirmationVisible)
+    {
+        <div class="confirm-delete" @onclick:stopPropagation="true">
+            <div class="content">
+                <h2>Confirm Delete</h2>
+                <p>Are you sure you want to delete this subscription?</p>
+                <div class="buttons">
+                    <button class="btn-youtube" @onclick="DeleteConfirmed">Yes</button>
+                    <button class="btn-gray" @onclick="(() => isConfirmationVisible = false)">No</button>
+                </div>
+            </div>
+        </div>
+    }
+    @if (userToUpdate != null)
+    {
+        var user = userToUpdate.Value.User;
+        var notifyEmail = userToUpdate.Value.NotifyEmail;
+
+        <div class="update-form" @onclick:stopPropagation="true">
+            <div class="content">
+                <h3>Update subscription</h3>
+                <EditForm Model="userToUpdateModel" OnValidSubmit="UpdateUser">
+                    <div id="form-firstname" class="input-group">
+                        <label for="FirstName">First name</label>
+                        <InputText id="FirstName" @bind-Value="user.UserProfile!.FirstName" disabled />
+                    </div>
+                    <div id="form-lastname" class="input-group">
+                        <label for="LastName">Last name</label>
+                        <InputText id="LastName" @bind-Value="user.UserProfile!.LastName" disabled />
+                    </div>
+                    <div id="form-email" class="input-group">
+                        <label for="Email">User name</label>
+                        <InputText id="Email" @bind-Value="user.Email" disabled />
+                    </div>
+                    <div id="form-email" class="input-group">
+                        <label for="Email">Subscribed Email</label>
+                        <InputText id="NotifyEmail" @bind-Value="userToUpdateModel.Email" />
+                    </div>
+
+                    <hr />
+
+                    <button class="btn-theme" type="submit">Update</button>
+                </EditForm>
+                <button class="btn-gray" @onclick="(() => userToUpdate = null)">Close</button>
+            </div>
+        </div>
+    }
+
+</section>
+
+
+@code {
+    private List<CoursesModel>? courses;
+    private List<CategoryModel>? categories;
+
+
+}
+ *@
