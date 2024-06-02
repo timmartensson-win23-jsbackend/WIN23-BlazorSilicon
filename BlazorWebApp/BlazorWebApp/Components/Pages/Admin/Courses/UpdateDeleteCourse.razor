@@ -1,0 +1,357 @@
+﻿@page "/admin/updatedeletecourse"
+@using BlazorWebApp.Models.AdminPortal.Courses
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@inject GraphQLService graphQLService
+
+
+<PageTitle>Administrate Courses</PageTitle>
+
+@if (courses == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @if (isConfirmationVisible || courseToUpdate != null)
+    {
+        <div class="page-overlay" @onclick="HideForms"></div>
+    }
+    <section id="admin-updatedeletecourse" @onclick="HideForms">
+        <div class="user-list-group">
+            <h3>Courses</h3>
+            <div class="user-header"></div>
+
+            @foreach (var course in courses)
+            {   
+                <div class="user-list-item">
+                    <div class="credentials">
+                        <div class="full-name">Course Title: @course.Title</div>
+                        <div class="email">Author: @course.AuthorName</div>
+                        <div class="notify-email">Course ID: @course.Id</div>
+                    </div>
+                    <div class="links">
+                        <button class="btn-theme" @onclick="(() => ShowUpdateForm(course))" @onclick:stopPropagation="true">Read/Update</button>
+                        <button class="btn-youtube" @onclick="(() => ShowConfirmation(course))" @onclick:stopPropagation="true">Delete</button>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (isConfirmationVisible)
+        {
+            <div class="confirm-delete" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h2>Confirm Delete</h2>
+                    <p>Are you sure you want to delete this course?</p>
+                    <div class="buttons">
+                        <button class="btn-youtube" @onclick="DeleteConfirmed">Yes</button>
+                        <button class="btn-gray" @onclick="(() => isConfirmationVisible = false)">No</button>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (courseToUpdate != null)
+        {
+            
+            <div class="update-form" @onclick:stopPropagation="true">
+                <div class="content">
+                    <h3>Update Course</h3>
+                    <EditForm Model="courseToUpdate" OnValidSubmit="UpdateCourse">
+                        <div id="coursetitle" class="input-group">
+                            <label for="Title">Course Title</label>
+                            <InputText @bind-Value="courseToUpdate.Title" />
+                        </div>
+                        <div id="courseprice" class="input-group">
+                            <label for="Price">Price</label>
+                            <InputText @bind-Value="courseToUpdate.Price" />
+                        </div>
+                        <div id="coursediscount" class="input-group">
+                            <label for="DiscountPrice">Discount Price</label>
+                            <InputText @bind-Value="courseToUpdate.DiscountPrice" />
+                        </div>
+                        <div id="courseimage" class="input-group">
+                            <label for="CourseImage">Image url</label>
+                            <InputText @bind-Value="courseToUpdate.CourseImage" />
+                        </div>
+                        <div id="courseimagealt" class="input-group">
+                            <label for="CourseImageAltText">Alt text for course image</label>
+                            <InputText @bind-Value="courseToUpdate.CourseImageAltText" />
+                        </div>
+                        <div id="courserating" class="input-group">
+                            <label for="Rating">Rating</label>
+                            <InputText @bind-Value="courseToUpdate.Rating" />
+                        </div>
+                        <div id="coursereviews" class="input-group">
+                            <label for="Reviews">Reviews</label>
+                            <InputText @bind-Value="courseToUpdate.Reviews" />
+                        </div>
+                        <div id="courseviews" class="input-group">
+                            <label for="Views">Views</label>
+                            <InputText @bind-Value="courseToUpdate.Views" />
+                        </div>
+                        <div id="courselikespercent" class="input-group">
+                            <label for="LikesInPercent">Likes in percent</label>
+                            <InputText @bind-Value="courseToUpdate.LikesInPercent" />
+                        </div>
+                        <div id="courselikesnumbers" class="input-group">
+                            <label for="LikesInNumbers">Likes in numbers</label>
+                            <InputText @bind-Value="courseToUpdate.LikesInNumbers" />
+                        </div>
+                        <div id="courseauthorname" class="input-group">
+                            <label for="AuthorName">Author name</label>
+                            <InputText @bind-Value="courseToUpdate.AuthorName" />
+                        </div>
+                        <div id="courseauthorbio" class="input-group">
+                            <label for="AutherBio">Author biography</label>
+                            <InputText @bind-Value="courseToUpdate.AutherBio" />
+                        </div>
+                        <div id="courseauthorimage" class="input-group">
+                            <label for="AuthorImage">Image url of author</label>
+                            <InputText @bind-Value="courseToUpdate.AuthorImage" />
+                        </div>
+                        <div id="courseauthorimagealt" class="input-group">
+                            <label for="AuthorImageAltText">Alt text for author image</label>
+                            <InputText @bind-Value="courseToUpdate.AutherImageAltText" />
+                        </div>
+                        <div id="courseyoutube" class="input-group">
+                            <label for="YouTubeSubscribers">YouTube Subscribers</label>
+                            <InputText @bind-Value="courseToUpdate.YouTubeSubscribers" />
+                        </div>
+                        <div id="coursefacebook" class="input-group">
+                            <label for="FaceBookFollowers">FaceBook Followers</label>
+                            <InputText @bind-Value="courseToUpdate.FaceBookFollowers" />
+                        </div>
+                        <div id="courseshowcaseimage" class="input-group">
+                            <label for="ShowcaseImage">Image url for showcase</label>
+                            <InputText @bind-Value="courseToUpdate.ShowcaseImage" />
+                        </div>
+                        <div id="coursedescription" class="input-group">
+                            <label for="CourseDescription">Description of course</label>
+                            <InputText @bind-Value="courseToUpdate.CourseDescription" />
+                        </div>
+                        <div id="courseviewhours" class="input-group">
+                            <label for="ViewHours">View Hours</label>
+                            <InputText @bind-Value="courseToUpdate.ViewHours" />
+                        </div>
+                        <div id="coursearticles" class="input-group">
+                            <label for="Articles">Articles</label>
+                            <InputText @bind-Value="courseToUpdate.Articles" />
+                        </div>
+                        <div id="courseresources" class="input-group">
+                            <label for="Resources">Resourses</label>
+                            <InputText @bind-Value="courseToUpdate.Resources" />
+                        </div>
+                        <div id="courseaccesstime" class="input-group">
+                            <label for="AccessTime">Access Time</label>
+                            <InputText @bind-Value="courseToUpdate.AccessTime" />
+                        </div>
+                        <div id="courseprogramtitle" class="input-group">
+                            <label for="ProgramDetailsTitle">Program Details Title</label>
+                            <InputText id="ProgramDetailsTitle" @bind-Value="newProgramDetailsTitle" />
+                            <button class="btn-gray" type="button" @onclick="AddProgramDetailsTitle">Add to list</button>
+                            <ul>
+                                @if (courseToUpdate.ProgramDetailsTitle != null)
+                                {
+                                    @foreach (var title in courseToUpdate.ProgramDetailsTitle)
+                                    {
+                                        <li>@title</li>
+                                    }
+                                }
+
+                            </ul>
+                        </div>
+                        <div id="courseprogramtext" class="input-group">
+                            <label for="ProgramDetailsText">Program Details Text</label>
+                            <InputText id="ProgramDetailsText" @bind-Value="newProgramDetailsText" />
+                            <button class="btn-gray" type="button" @onclick="AddProgramDetailsText">Add to list</button>
+                            <ul>
+                                @if (courseToUpdate.ProgramDetailsText != null)
+                                {
+                                    @foreach (var text in courseToUpdate.ProgramDetailsText)
+                                    {
+                                        <li>@text</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <div id="courselearnpoints" class="input-group">
+                            <label for="LearnPoints">Learn Points</label>
+                            <InputText id="LearnPoints" @bind-Value="newLearnPoint" />
+                            <button class="btn-gray" type="button" @onclick="AddLearnPoint">Add to list</button>
+                            <ul>
+                                @if (courseToUpdate.LearnPoints != null)
+                                {
+                                    @foreach (var point in courseToUpdate.LearnPoints)
+                                    {
+                                        <li>@point</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                        <div id="coursecategory" class="input-group">
+                            <label for="Category">Category</label>
+                            <InputText @bind-Value="courseToUpdate.Category" />
+                        </div>
+
+                        <hr />
+
+                        <button class="btn-theme" type="submit">Update</button>
+                    </EditForm>
+                    <button class="btn-gray" @onclick="(() => courseToUpdate = null)">Close</button>
+                </div>
+            </div>
+        }
+
+    </section>
+}
+
+
+
+
+
+@code {
+    private List<CoursesModel>? courses;
+    private List<CategoryModel>? categories;
+    private bool isConfirmationVisible = false;
+    private CoursesModel? courseToUpdate;
+    private CoursesModel? courseToDelete;
+    private string? newProgramDetailsTitle;
+    private string? newProgramDetailsText;
+    private string? newLearnPoint;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCourses();
+
+    }
+
+    private async Task LoadCourses()
+    {
+        var query = new GraphQLQuery { Query = "{getAllCourses {id showcaseImage courseImage courseImageAltText isBestSeller title category {categoryName} courseDescription learnPoints articles resources accessTime discountPrice price programDetailsTitle programDetailsText reviews likesInNumbers likesInPercent viewHours authorImage autherImageAltText authorName autherBio youTubeSubscribers faceBookFollowers rating views}}" };
+        var respons = await Http.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=Ms8IxsC9w8G_dT8KJZbuf11TR3o7reeP9ld8DSPtnesZAzFuaTdsNw%3D%3D", query);
+
+        if (respons.IsSuccessStatusCode)
+        {
+            var result = await respons.Content.ReadFromJsonAsync<DynamicGraphQLResponse>();
+            courses = result?.Data.GetProperty("getAllCourses").EnumerateArray().Select(course => new CoursesModel
+                {
+                    Id = course.GetProperty("id").GetString(),
+                    Title = course.GetProperty("title").GetString()!,
+                    ShowcaseImage = course.GetProperty("showcaseImage").GetString(),
+                    IsBestSeller = course.GetProperty("isBestSeller").GetBoolean(),
+                    Category = $"{course.GetProperty("category").GetProperty("categoryName").GetString()}",
+                    CourseImage = course.GetProperty("courseImage").GetString(),
+                    CourseImageAltText = course.GetProperty("courseImageAltText").GetString(),
+                    CourseDescription = course.GetProperty("courseDescription").GetString(),
+                    AuthorName = course.GetProperty("authorName").GetString(),
+                    Articles = course.GetProperty("articles").GetString(),
+                    Resources = course.GetProperty("resources").GetString(),
+                    AccessTime = course.GetProperty("accessTime").GetString(),
+                    ProgramDetailsTitle = course.GetProperty("programDetailsTitle").EnumerateArray().Select(title => title.GetString()!).ToList(),
+                    ProgramDetailsText = course.GetProperty("programDetailsText").EnumerateArray().Select(text => text.GetString()!).ToList(),
+                    Reviews = course.GetProperty("reviews").GetString(),
+                    AuthorImage = course.GetProperty("authorImage").GetString(),
+                    AutherImageAltText = course.GetProperty("autherImageAltText").GetString(),
+                    YouTubeSubscribers = course.GetProperty("youTubeSubscribers").GetString(),
+                    AutherBio = course.GetProperty("autherBio").GetString(),
+                    FaceBookFollowers = course.GetProperty("faceBookFollowers").GetString(),
+                    Rating = course.GetProperty("rating").GetString(),
+                    Views = course.GetProperty("views").GetString(),
+                    LearnPoints = course.GetProperty("learnPoints").EnumerateArray().Select(point => point.GetString()!).ToList(),
+                    DiscountPrice = course.GetProperty("discountPrice").GetString(),
+                    Price = course.GetProperty("price").GetString(),
+                    ViewHours = course.GetProperty("viewHours").GetString(),
+                    LikesInPercent = course.GetProperty("likesInPercent").GetString(),
+                    LikesInNumbers = course.GetProperty("likesInNumbers").GetString()
+                })
+            .ToList();
+        }
+    }
+
+
+
+    private async Task UpdateCourse()
+    {
+        if (courseToUpdate == null)
+        {
+            return;
+        }
+
+        var updateResult = await graphQLService.UpdateCourseAsync(courseToUpdate);
+        if (updateResult.courseResponse != null)
+        {
+            await LoadCourses();
+            courseToUpdate = null;
+        }
+        else
+        {
+            // Handle error
+            Console.WriteLine($"Update failed: {updateResult.errorMessage}");
+        }
+    }
+    private async Task DeleteConfirmed()
+    {
+        if (courseToDelete is not null)
+        {
+
+        }
+    }
+
+    private void ShowUpdateForm(CoursesModel course)
+    {
+        courseToUpdate = course;
+    }
+
+    private void ShowConfirmation(CoursesModel course)
+    {
+        courseToUpdate = course;
+        isConfirmationVisible = true;
+    }
+
+    private void HideForms()
+    {
+        isConfirmationVisible = false;
+        courseToUpdate = null;
+    }
+
+    private void AddProgramDetailsTitle()
+    {
+        if (!string.IsNullOrWhiteSpace(newProgramDetailsTitle))
+        {
+            if (courseToUpdate.ProgramDetailsTitle == null)
+            {
+                courseToUpdate.ProgramDetailsTitle = new List<string>();
+            }
+            courseToUpdate.ProgramDetailsTitle.Add(newProgramDetailsTitle);
+            newProgramDetailsTitle = string.Empty;
+        }
+    }
+
+    private void AddProgramDetailsText()
+    {
+        if (!string.IsNullOrWhiteSpace(newProgramDetailsText))
+        {
+            if (courseToUpdate.ProgramDetailsText == null)
+            {
+                courseToUpdate.ProgramDetailsText = new List<string>();
+            }
+            courseToUpdate.ProgramDetailsText.Add(newProgramDetailsText);
+            newProgramDetailsText = string.Empty;
+        }
+    }
+
+    private void AddLearnPoint()
+    {
+        if (!string.IsNullOrWhiteSpace(newLearnPoint))
+        {
+            if (courseToUpdate.LearnPoints == null)
+            {
+                courseToUpdate.LearnPoints = new List<string>();
+            }
+            courseToUpdate.LearnPoints.Add(newLearnPoint);
+            newLearnPoint = string.Empty;
+        }
+    }
+
+}
