@@ -3,6 +3,39 @@
     width: 100%;
     position: relative;
 
+    h3 {
+        padding-top: 1rem;
+        text-align:center;
+    }
+
+    position: relative;
+
+    .alert {
+        display: none;
+        position: absolute;
+        top: -4rem;
+        left: 1rem;
+        width: 60%;
+    }
+
+    .alert:not(:empty) {
+        display: block;
+    }
+
+    @include md {
+        .alert {
+            width: 30%;
+        }
+    }
+
+    @include xl {
+        .alert {
+            top: -4rem;
+            width: 20%;
+        }
+    }
+
+
 
 
     .user-list-item {
@@ -85,6 +118,14 @@
 
                 button {
                     margin-top: 10px;
+                }
+
+                .btn-add{
+                    margin-bottom: 1rem;
+                }
+                .btn-list{
+                    margin-top:0.2rem;
+                    margin-bottom:1rem;
                 }
             }
         }
