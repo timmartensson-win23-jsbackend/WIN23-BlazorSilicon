@@ -319,20 +319,20 @@ else
     {
         if(courseToDelete is not null)
         {
-            var deleteResult = await graphQLService.DeleteCourseAsync(courseToDelete.Id!);
+            var deleteResult = await graphQLService.DeleteCourseAsync(courseToDelete);
             if (deleteResult)
             {
-                StatusMessage = "Course Deleted";
                 await LoadCourses();
+                courseToDelete = null;
+                isConfirmationVisible = false;
+                StatusMessage = "Course Deleted";
             }
             else
             {
                 StatusMessage = "Failed to delete course";
             }
             StartTimer();
-        }
-
-        
+        }        
         
     }
 
@@ -361,12 +361,14 @@ else
     {
         courseToDelete = course;
         isConfirmationVisible = true;
+        StateHasChanged();
     }
 
     private void HideForms()
     {
         isConfirmationVisible = false;
         courseToUpdate = null;
+        StateHasChanged();
     }
 
     private void AddProgramDetailsTitle()
