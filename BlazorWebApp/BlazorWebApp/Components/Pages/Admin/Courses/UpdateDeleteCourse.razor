@@ -317,10 +317,23 @@ else
 
     private async Task DeleteConfirmed()
     {
-        if (courseToDelete is not null)
+        if(courseToDelete is not null)
         {
-
+            var deleteResult = await graphQLService.DeleteCourseAsync(courseToDelete.Id!);
+            if (deleteResult)
+            {
+                StatusMessage = "Course Deleted";
+                await LoadCourses();
+            }
+            else
+            {
+                StatusMessage = "Failed to delete course";
+            }
+            StartTimer();
         }
+
+        
+        
     }
 
     private void StartTimer()
@@ -346,7 +359,7 @@ else
 
     private void ShowConfirmation(CoursesModel course)
     {
-        courseToUpdate = course;
+        courseToDelete = course;
         isConfirmationVisible = true;
     }
 

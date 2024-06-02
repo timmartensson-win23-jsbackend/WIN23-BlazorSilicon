@@ -165,6 +165,42 @@ public class GraphQLService(HttpClient httpClient)
         }
     }
 
+
+    public async Task<bool> DeleteCourseAsync(string courseId)   //skiten fungerar inte!!
+    {
+        var mutation = @"                   
+        mutation($id: ID!) {
+            deleteCourse(id: $id) {
+                id
+            }
+        }";
+
+        
+        var variables = new
+        {
+            id = courseId
+        };
+
+        var request = new
+        {
+            query = mutation,
+            variables
+        };
+
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("https://coursesprovider.azurewebsites.net/api/graphql?code=F3ve4AdrXYNCGI-2JWQFXh1E_D_dWo4yAmdz3qhVhM9JAzFucoYaqg%3D%3D", request);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<GraphQLResponse>();
+
+            return result?.Data?.DeleteCourse ?? false;
+        }
+        catch (HttpRequestException)
+        {
+            return false;
+        }
+    
+    }
 }
 
 
@@ -176,6 +212,7 @@ public class GraphQLData
 {
     public CreateCourseResponse? CreateCourse { get; set; }
     public UpdateCourseResponse? UpdateCourse { get; set; }
+    public bool DeleteCourse { get; set; }
 }
 public class CreateCourseResponse
 {
