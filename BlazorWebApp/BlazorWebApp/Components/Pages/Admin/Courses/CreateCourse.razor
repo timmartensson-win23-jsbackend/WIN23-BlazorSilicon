@@ -55,9 +55,8 @@
                 <InputText @bind-Value="Model.LikesInNumbers" />
             </div>
         </div>
-
+        <h4>Author Information</h4>
         <div class="author-info">
-            <h4>Author Information</h4>
             <div id="courseauthorname" class="input-group">
                 <label for="AuthorName">Author name</label>
                 <InputText @bind-Value="Model.AuthorName" />
@@ -67,7 +66,7 @@
                 <InputText @bind-Value="Model.AutherBio" />
             </div>
             <div id="courseauthorimage" class="input-group">
-                <label for="AuthorImage">Image of author</label>
+                <label for="AuthorImage">Image url of author</label>
                 <InputText @bind-Value="Model.AuthorImage" />
             </div>
             <div id="courseauthorimagealt" class="input-group">
@@ -83,15 +82,14 @@
                 <InputText @bind-Value="Model.FaceBookFollowers" />
             </div>
         </div>
-
+        <h4>Details about the Course</h4>
         <div class="course-details">
-            <h4>Details about the Course</h4>
             <div id="courseshowcaseimage" class="input-group">
                 <label for="ShowcaseImage">Image url for showcase</label>
                 <InputText @bind-Value="Model.ShowcaseImage" />
-            </div>
+            </div>            
             <div id="coursedescription" class="input-group">
-                <label for="CourseDescription">Description</label>
+                <label for="CourseDescription">Description of course</label>
                 <InputText @bind-Value="Model.CourseDescription" />
             </div>
             <div id="courseviewhours" class="input-group">
